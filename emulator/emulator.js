@@ -870,13 +870,13 @@ function Отобразить_индикатор() {
         режим_счёта = !режим_счёта;
     }
 
-    var str = ''
-    for (сч = 0; сч < 12; сч++) {
-        str = str + Символы_разрядов[Индикатор[сч]];
-        //document.getElementById("Знакоместо_"+сч).value = Символы_разрядов[Индикатор[сч]];
-        //document.getElementById("Знакоместо_"+сч).value += (Индик_зпт[сч] ? "," : " ");
+    var digits = "";
+    var points = ""
+    for (var сч = 0; сч < 12; сч++) {
+        digits += Символы_разрядов[Индикатор[сч]];
+        points += (Индик_зпт[сч] ? "," : " ");
     }
-    console.log(str);
+    display(digits, points);
 }
 
 function Прочитать_число(микросхема, адрес) {
@@ -1799,24 +1799,24 @@ const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitT
 Включить();
 
 
-function do1() {
-    Нажатие_клавиши(49)
+function keyPress(code) {
+    Нажатие_клавиши(code)
 }
 
-function do2() {
-    Нажатие_клавиши(50)
+function buttonPress(x, y) {
+    Нажатие_кнопки(x, y)
 }
 
-setInterval(do1, 1000);
-setInterval(do2, 1000);
+function display(digits, points) {
+    console.log(digits);
+}
 
+function onDisplay(func) {
+    display = func;
+}
 
-//Нажатие_клавиши(50)
-//Нажатие_клавиши(49)
-
-// document.onkeydown = function (событие) {
-//     if (!ввод_кода) {
-//         var e = событие || window.event;
-//         Нажатие_клавиши(e.charCode && e.keyCode == 0 ? e.charCode : e.keyCode);
-//     }
-// }
+module.exports = {
+    keyPress,
+    buttonPress,
+    onDisplay
+};
