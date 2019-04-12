@@ -21,13 +21,15 @@
             border: solid 1px #707070;
             cursor: pointer;
             line-height: 12px;
-            margin-top: 0px; margin-bottom: 3px;
+            margin-top: 0px;
+            margin-bottom: 3px;
             border-radius: 5px;
             box-shadow: 0px 4px 0px #707070;
         }
 
         .МК-61 button:active {
-            margin-top: 3px; margin-bottom: 0px;
+            margin-top: 3px;
+            margin-bottom: 0px;
             box-shadow: 0px 1px 0px #707070;
         }
 
@@ -144,167 +146,229 @@
 <body>
 
 
-    <input type="text" id="display">
+<input type="text" id="display">
 
-    <script type="text/javascript" src="http://localhost:8080/faye/client.js"></script>
+<script type="text/javascript" src="http://localhost:8080/faye/client.js"></script>
 
-    <script type="text/javascript">
+<script type="text/javascript">
 
-        document.onkeydown = function (event) {
-            var e = event || window.event;
-            var code = (e.charCode && e.keyCode == 0 ? e.charCode : e.keyCode);
-            var msg = {
-                action: "key",
-                code: code
-            };
-            ws.send(JSON.stringify(msg));
+    document.onkeydown = function (event) {
+        var e = event || window.event;
+        var code = (e.charCode && e.keyCode == 0 ? e.charCode : e.keyCode);
+        var msg = {
+            action: "key",
+            code: code
         };
+        ws.send(JSON.stringify(msg));
+    };
 
-        function display(digits, points) {
-            for (var pos = 0; pos < 12; pos++) {
-                document.getElementById("Знакоместо_" + pos).value = digits.charAt(pos);
-                document.getElementById("Знакоместо_" + pos).value += points.charAt(pos);
-            }
+    function display(digits, points) {
+        for (var pos = 0; pos < 12; pos++) {
+            document.getElementById("Знакоместо_" + pos).value = digits.charAt(pos);
+            document.getElementById("Знакоместо_" + pos).value += points.charAt(pos);
         }
+    }
 
-        function Нажатие_кнопки(x, y) {
-            var msg = {
-                action: "button",
-                x: x,
-                y: y,
-            };
-            ws.send(JSON.stringify(msg));
+    function Нажатие_кнопки(x, y) {
+        var msg = {
+            action: "button",
+            x: x,
+            y: y,
+        };
+        ws.send(JSON.stringify(msg));
+    }
+
+
+    var ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/');
+
+    ws.onopen = function (event) {
+        var msg = {
+            action: "sync"
+        };
+        ws.send(JSON.stringify(msg))
+    };
+
+    ws.onmessage = function (event) {
+        var msg = JSON.parse(event.data);
+
+        switch (msg.action) {
+            case "display":
+                display(msg.digits, msg.points);
+                break;
         }
+    };
 
+</script>
 
-        var ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/');
+<div id="МК-61" style="position: absolute; top: 0;">
+    <table align="center" class="МК-61" style="background-color: #353535; border: outset 3px #FFFFFF; padding: 5px;">
+        <tbody>
+        <tr>
+            <td rowspan="8">&nbsp;&nbsp;&nbsp;</td>
+            <td rowspan="8" style="vertical-align: top">
+                <table>
+                    <tr>
+                        <td colspan="2">
+                            <span class="бел_т" style="font-size: 16px;">ЭЛЕКТРОНИКА&nbsp;&nbsp;&nbsp;МК&nbsp;52</span>
+                            <br>
+                            <br>
+                            <br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center" class="индикатор">
+                            <br>
+                            <script>
+                                for (var сч = 0; сч < 12; сч++)
+                                    document.write('<input type=text class="знакоместо" id="Знакоместо_' + сч + '" readonly />');
+                            </script>
+                            <br>
+                            <br>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td rowspan="8">&nbsp;&nbsp;&nbsp;</td>
+            <td><br>
+                <button class="кнопка_F" onclick="Нажатие_кнопки(11,9);">F</button>
+            </td>
 
-        ws.onopen = function (event) {
-            var msg = {
-                action: "sync"
-            };
-            ws.send(JSON.stringify(msg))
-        };
+            <td><span class="жёл_т">x&lt;0</span><br>
+                <button class="верхняя_кнопка" onclick="Нажатие_кнопки(7,9);">→<br>ШГ</button>
+            </td>
+            <td><span class="жёл_т">L0</span><br>
+                <button class="верхняя_кнопка" onclick="Нажатие_кнопки(8,9);">П→X</button>
+            </td>
+            <td><span class="жёл_т">sin</span>&nbsp;<span class="син_т">[x]</span><br>
+                <button onclick="Нажатие_кнопки(9,1);">7</button>
+            </td>
+            <td><span class="жёл_т">cos</span>&nbsp;<span class="син_т">{x}</span><br>
+                <button onclick="Нажатие_кнопки(10,1);">8</button>
+            </td>
+            <td><span class="жёл_т">tg</span>&nbsp;<span class="син_т">max</span><br>
+                <button onclick="Нажатие_кнопки(11,1);">9</button>
+            </td>
+            <td><span class="жёл_т">√¯</span><br>
+                <button onclick="Нажатие_кнопки(3,8);">-</button>
+            </td>
+            <td><span class="жёл_т">1/x</span><br>
+                <button onclick="Нажатие_кнопки(5,8);">÷</button>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><br>
+                <button class="кнопка_K" onclick="Нажатие_кнопки(10,9);">K</button>
+            </td>
 
-        ws.onmessage = function (event) {
-            var msg = JSON.parse(event.data);
+            <td><span class="жёл_т">x=0</span><br>
+                <button class="верхняя_кнопка" onclick="Нажатие_кнопки(9,9);">←<br>ШГ</button>
+            </td>
 
-            switch(msg.action) {
-                case "display":
-                    display(msg.digits, msg.points);
-                    break;
-            }
-        };
+            <td><span class="жёл_т">L1</span><br>
+                <button class="верхняя_кнопка" onclick="Нажатие_кнопки(6,9);">X→П</button>
+            </td>
 
-    </script>
+            <td><span class="жёл_т">sin<sup>-1</sup></span>&nbsp;<span class="син_т">|x|</span><br>
+                <button onclick="Нажатие_кнопки(6,1);">4</button>
+            </td>
+            <td><span class="жёл_т">cos<sup>-1</sup></span>&nbsp;<span class="син_т">ЗН</span><br>
+                <button onclick="Нажатие_кнопки(7,1);">5</button>
+            </td>
+            <td>
+                <span class="жёл_т">tg<sup>-1</sup></span>&nbsp;
+                <span class="син_т" style="font-size: 10px; letter-spacing:-3px;">°<span
+                        style="vertical-align: 8px;">←</span>'</span><br>
+                <button onclick="Нажатие_кнопки(8,1);">6</button>
+            </td>
+            <td>
+                <span class="жёл_т">π</span>&nbsp;
+                <span class="син_т" style="font-size: 10px; letter-spacing:-3px;">°<span
+                        style="vertical-align: 8px;">→</span>'</span><br>
+                <button onclick="Нажатие_кнопки(2,8);">+</button>
+            </td>
+            <td><span class="жёл_т">x²</span><br>
+                <button onclick="Нажатие_кнопки(4,8);">×</button>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <button class="верхняя_кнопка" onclick="Нажатие_кнопки(0,0);">↑↓</button>
+            </td>
+            <td><span class="жёл_т">x≥0</span><br>
+                <button class="верхняя_кнопка" onclick="Нажатие_кнопки(4,9);">В/О</button>
+            </td>
 
-    <div id="МК-61" style="position: absolute; top: 0;">
-        <table align="center" class="МК-61" style="background-color: #353535; border: outset 3px #FFFFFF; padding: 5px;">
-            <tbody><tr>
-                <td rowspan="10"> </td>
-                <td colspan="5" align="center" class="индикатор">
-                    <script>
-                        for (var сч = 0; сч < 12; сч++)
-                            document.write('<input type=text class="знакоместо" id="Знакоместо_' + сч + '" readonly />');
-                    </script>
-                </td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="5">
-                    <span class="бел_т" style="font-size: 16px;">ЭЛЕКТРОНИКА&nbsp;&nbsp;&nbsp;МК&nbsp;61</span>
-                </td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="3" class="переключатель">
-                    <input type="radio" name="Выключатель" onclick="Выключить();" checked="">
-                    <input type="radio" name="Выключатель" onclick="Включить();" id="ВКЛ"><span class="бел_т">ВКЛ</span>
-                </td>
-                <td colspan="3" class="переключатель">
-                    <span class="бел_т">Р</span><input type="radio" name="Мера_угла" onclick="Мера_угла = 10;" id="Радианы" checked="">
-                    <span class="бел_т">ГРД</span><input type="radio" name="Мера_угла" onclick="Мера_угла = 12;" id="Грады">
-                    <span class="бел_т">Г</span><input type="radio" name="Мера_угла" onclick="Мера_угла = 11;" id="Градусы">
-                </td>
-            </tr>
-            <tr>
-                <td><br><button class="кнопка_F" onclick="Нажатие_кнопки(11,9);">F</button></td>
-                <td><span class="жёл_т">x&lt;0</span><br><button class="верхняя_кнопка" onclick="Нажатие_кнопки(7,9);">→<br>ШГ</button></td>
-                <td><span class="жёл_т">x=0</span><br><button class="верхняя_кнопка" onclick="Нажатие_кнопки(9,9);">←<br>ШГ</button></td>
-                <td><span class="жёл_т">x≥0</span><br><button class="верхняя_кнопка" onclick="Нажатие_кнопки(4,9);">В/О</button></td>
-                <td><span class="жёл_т">x≠0</span><br><button class="верхняя_кнопка" onclick="Нажатие_кнопки(2,9);">С/П</button></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><br><button class="кнопка_K" onclick="Нажатие_кнопки(10,9);">K</button></td>
-                <td><span class="жёл_т">L0</span><br><button class="верхняя_кнопка" onclick="Нажатие_кнопки(8,9);">П→X</button></td>
-                <td><span class="жёл_т">L1</span><br><button class="верхняя_кнопка" onclick="Нажатие_кнопки(6,9);">X→П</button></td>
-                <td><span class="жёл_т">L2</span><br><button class="верхняя_кнопка" onclick="Нажатие_кнопки(3,9);">БП</button></td>
-                <td><span class="жёл_т">L3</span><br><button class="верхняя_кнопка" onclick="Нажатие_кнопки(5,9);">ПП</button></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><span class="жёл_т">sin</span>&nbsp;<span class="син_т">[x]</span><br><button onclick="Нажатие_кнопки(9,1);">7</button></td>
-                <td><span class="жёл_т">cos</span>&nbsp;<span class="син_т">{x}</span><br><button onclick="Нажатие_кнопки(10,1);">8</button></td>
-                <td><span class="жёл_т">tg</span>&nbsp;<span class="син_т">max</span><br><button onclick="Нажатие_кнопки(11,1);">9</button></td>
-                <td><span class="жёл_т">√¯</span><br><button onclick="Нажатие_кнопки(3,8);">-</button></td>
-                <td><span class="жёл_т">1/x</span><br><button onclick="Нажатие_кнопки(5,8);">÷</button></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><span class="жёл_т">sin<sup>-1</sup></span>&nbsp;<span class="син_т">|x|</span><br><button onclick="Нажатие_кнопки(6,1);">4</button></td>
-                <td><span class="жёл_т">cos<sup>-1</sup></span>&nbsp;<span class="син_т">ЗН</span><br><button onclick="Нажатие_кнопки(7,1);">5</button></td>
-                <td>
-                    <span class="жёл_т">tg<sup>-1</sup></span>&nbsp;
-                    <span class="син_т" style="font-size: 10px; letter-spacing:-3px;">°<span style="vertical-align: 8px;">←</span>'</span><br>
-                    <button onclick="Нажатие_кнопки(8,1);">6</button>
-                </td>
-                <td>
-                    <span class="жёл_т">π</span>&nbsp;
-                    <span class="син_т" style="font-size: 10px; letter-spacing:-3px;">°<span style="vertical-align: 8px;">→</span>'</span><br>
-                    <button onclick="Нажатие_кнопки(2,8);">+</button>
-                </td>
-                <td><span class="жёл_т">x²</span><br><button onclick="Нажатие_кнопки(4,8);">×</button></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><span class="жёл_т">e<sup>x</sup></span><br><button onclick="Нажатие_кнопки(3,1);">1</button></td>
-                <td><span class="жёл_т">lg</span><br><button onclick="Нажатие_кнопки(4,1);">2</button></td>
-                <td>
-                    <span class="жёл_т">ln</span>&nbsp;
-                    <span class="син_т" style="font-size: 10px; letter-spacing:-3px;">
+            <td><span class="жёл_т">L2</span><br>
+                <button class="верхняя_кнопка" onclick="Нажатие_кнопки(3,9);">БП</button>
+            </td>
+
+            <td><span class="жёл_т">e<sup>x</sup></span><br>
+                <button onclick="Нажатие_кнопки(3,1);">1</button>
+            </td>
+            <td><span class="жёл_т">lg</span><br>
+                <button onclick="Нажатие_кнопки(4,1);">2</button>
+            </td>
+            <td>
+                <span class="жёл_т">ln</span>&nbsp;
+                <span class="син_т" style="font-size: 10px; letter-spacing:-3px;">
 				°<span style="vertical-align: 8px;">←</span><span style="letter-spacing:-2px;">' &nbsp; "</span>
 			</span><br>
-                    <button onclick="Нажатие_кнопки(5,1);">3</button>
-                </td>
-                <td>
-                    <span class="жёл_т">x<sup>y</sup></span>&nbsp;
-                    <span class="син_т" style="font-size: 10px; letter-spacing:-3px;">
+                <button onclick="Нажатие_кнопки(5,1);">3</button>
+            </td>
+            <td>
+                <span class="жёл_т">x<sup>y</sup></span>&nbsp;
+                <span class="син_т" style="font-size: 10px; letter-spacing:-3px;">
 				°<span style="vertical-align: 8px;">→</span><span style="letter-spacing:-2px;">' &nbsp; "</span>
 			</span><br>
-                    <button onclick="Нажатие_кнопки(6,8);">↔</button>
-                </td>
-                <td><span class="жёл_т">Вx</span>&nbsp;<span class="син_т">СЧ</span><br><button onclick="Нажатие_кнопки(11,8);">В↑</button></td>
-                <td class="надпись"><span class="бел_т"><br>e</span></td>
-            </tr>
-            <tr>
-                <td><span class="жёл_т">10<sup>x</sup></span>&nbsp;<span class="син_т">НОП</span><br><button onclick="Нажатие_кнопки(2,1);">0</button></td>
-                <td><span class="жёл_т">Ѻ</span>&nbsp;<span class="син_т">∧</span><br><button onclick="Нажатие_кнопки(7,8);">,</button></td>
-                <td><span class="жёл_т">АВТ</span>&nbsp;<span class="син_т">∨</span><br><button onclick="Нажатие_кнопки(8,8);">/-/</button></td>
-                <td><span class="жёл_т">ПРГ</span>&nbsp;<span class="син_т">⊕</span><br><button onclick="Нажатие_кнопки(9,8);">ВП</button></td>
-                <td><span class="жёл_т">СF</span>&nbsp;<span class="син_т">ИНВ</span><br><button class="кнопка_Сx" onclick="Нажатие_кнопки(10,8);">Сx</button></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td class="надпись"><span class="бел_т">a</span></td>
-                <td class="надпись"><span class="бел_т">b</span></td>
-                <td class="надпись"><span class="бел_т">c</span></td>
-                <td class="надпись"><span class="бел_т">d</span></td>
-                <td></td>
-            </tr>
-            </tbody></table>
-    </div>
+                <button onclick="Нажатие_кнопки(6,8);">↔</button>
+            </td>
+            <td><span class="жёл_т">Вx</span>&nbsp;<span class="син_т">СЧ</span><br>
+                <button onclick="Нажатие_кнопки(11,8);">В↑</button>
+            </td>
+            <td class="надпись"><span class="бел_т"><br>e</span></td>
+        </tr>
+        <tr>
+
+            <td>
+                <button class="верхняя_кнопка" onclick="Нажатие_кнопки(0,0);">A↑</button>
+            </td>
+
+            <td><span class="жёл_т">x≠0</span><br>
+                <button class="верхняя_кнопка" onclick="Нажатие_кнопки(2,9);">С/П</button>
+            </td>
+            <td><span class="жёл_т">L3</span><br>
+                <button class="верхняя_кнопка" onclick="Нажатие_кнопки(5,9);">ПП</button>
+            </td>
+            <td><span class="жёл_т">10<sup>x</sup></span>&nbsp;<span class="син_т">НОП</span><br>
+                <button onclick="Нажатие_кнопки(2,1);">0</button>
+            </td>
+            <td><span class="жёл_т">Ѻ</span>&nbsp;<span class="син_т">∧</span><br>
+                <button onclick="Нажатие_кнопки(7,8);">.</button>
+            </td>
+            <td><span class="жёл_т">АВТ</span>&nbsp;<span class="син_т">∨</span><br>
+                <button onclick="Нажатие_кнопки(8,8);">/-/</button>
+            </td>
+            <td><span class="жёл_т">ПРГ</span>&nbsp;<span class="син_т">⊕</span><br>
+                <button onclick="Нажатие_кнопки(9,8);">ВП</button>
+            </td>
+            <td><span class="жёл_т">СF</span>&nbsp;<span class="син_т">ИНВ</span><br>
+                <button class="кнопка_Сx" onclick="Нажатие_кнопки(10,8);">Сx</button>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+            <td class="надпись"><span class="бел_т">a</span></td>
+            <td class="надпись"><span class="бел_т">b</span></td>
+            <td class="надпись"><span class="бел_т">c</span></td>
+            <td class="надпись"><span class="бел_т">d</span></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 </body>
 </html>
