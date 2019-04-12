@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/mk-52-retrofit.iml" filepath="$PROJECT_DIR$/.idea/mk-52-retrofit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/controller/controller.iml" filepath="$PROJECT_DIR$/controller/controller.iml" />
+      <module fileurl="file://$PROJECT_DIR$/emulator/emulator.iml" filepath="$PROJECT_DIR$/emulator/emulator.iml" />
     </modules>
   </component>
 </project>

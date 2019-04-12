@@ -149,20 +149,15 @@
     <script type="text/javascript" src="http://localhost:8080/faye/client.js"></script>
 
     <script type="text/javascript">
-        var client = new Faye.Client('http://localhost:8080/faye');
-
-        client.subscribe('/display', function(message) {
-            display(message.digits, message.points);
-        });
 
         document.onkeydown = function (event) {
             var e = event || window.event;
             var code = (e.charCode && e.keyCode == 0 ? e.charCode : e.keyCode);
-            fetch("/key?code=" + code, {
-                method: "POST",
-            }).then(res => {
-                //console.log(res);
-            });
+            var msg = {
+                action: "key",
+                code: code
+            };
+            ws.send(JSON.stringify(msg));
         };
 
         function display(digits, points) {
@@ -173,12 +168,33 @@
         }
 
         function Нажатие_кнопки(x, y) {
-            fetch("/button?x=" + x + "&y=" + y, {
-                method: "POST",
-            }).then(res => {
-                //console.log(res);
-            });
+            var msg = {
+                action: "button",
+                x: x,
+                y: y,
+            };
+            ws.send(JSON.stringify(msg));
         }
+
+
+        var ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/');
+
+        ws.onopen = function (event) {
+            var msg = {
+                action: "sync"
+            };
+            ws.send(JSON.stringify(msg))
+        };
+
+        ws.onmessage = function (event) {
+            var msg = JSON.parse(event.data);
+
+            switch(msg.action) {
+                case "display":
+                    display(msg.digits, msg.points);
+                    break;
+            }
+        };
 
     </script>
 

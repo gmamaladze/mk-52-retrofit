@@ -871,7 +871,7 @@ function Отобразить_индикатор() {
     }
 
     var digits = "";
-    var points = ""
+    var points = "";
     for (var сч = 0; сч < 12; сч++) {
         digits += Символы_разрядов[Индикатор[сч]];
         points += (Индик_зпт[сч] ? "," : " ");
@@ -1811,6 +1811,10 @@ function display(digits, points) {
     console.log(digits);
 }
 
+function sync() {
+    Отобразить_индикатор();
+}
+
 function onDisplay(func) {
     display = func;
 }
@@ -1818,5 +1822,6 @@ function onDisplay(func) {
 module.exports = {
     keyPress,
     buttonPress,
+    sync,
     onDisplay
 };

@@ -2,54 +2,59 @@
 
 var port = process.env.PORT || 8080;
 
-var express = require('express'),
-    emulator = require('./emulator.js'),
-    faye = require('faye'),
-    http = require('http'),
-    path = require('path');
+var path = require('path');
+var express = require('express');
+var expressWs = require('express-ws');
+expressWs = expressWs(express());
+var app = expressWs.app;
 
-var app = express(),
-    server = http.createServer(app),
-    bayeux = new faye.NodeAdapter({mount: '/faye', timeout: 45}),
-    client = new faye.Client('http://localhost:' + port + '/faye');
+var emulator = require('./emulator.js');
 
+app.use(express.static('public'));
 
-bayeux.attach(server);
+var aWss = expressWs.getWss('/');
 
-bayeux.on('handshake', function(clientId) {
-    console.log('Client connected', clientId);
+app.ws('/', function (ws, req) {
+    console.log('Socket connected.');
+    ws.onmessage = function (res) {
+        console.log('Received: ' + res.data);
+        var msg = JSON.parse(res.data);
+
+        switch (msg.action) {
+            case "sync":
+                emulator.sync();
+                break;
+            case "button":
+                emulator.buttonPress(msg.x, msg.y);
+                break;
+            case "key":
+                emulator.keyPress(msg.code);
+                break;
+        }
+    };
 });
 
-
-client.connect();
-
-emulator.onDisplay(function(digits, points) {
-    var publication = client.publish('/display', {digits: digits, points: points});
-    publication.then(function() {
-        //console.log('Message received by server!');
-    }, function(error) {
-        console.log('There was a problem: ' + error.message);
+function broadcast(msg) {
+    var data = JSON.stringify(msg);
+    console.log('Sending: ' + data);
+    aWss.clients.forEach(function (client) {
+        client.send(data);
     });
-});
+}
 
-app.post("/key", (req, res, next) => {
-    let code = req.query.code;
-    emulator.keyPress(code);
-    res.sendStatus(200);
-});
-
-app.post("/button", (req, res, next) => {
-    let x = req.query.x;
-    let y = req.query.y;
-    emulator.buttonPress(x, y);
-    res.sendStatus(200);
-});
-
-server.listen(port, function() {
-    console.log('Listening on ' + port);
-});
-
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+app.listen(port, function () {
+    console.log('Listening on port:' + port);
+});
+
+emulator.onDisplay(function (digits, points) {
+    var msg = {
+        action: 'display',
+        digits: digits,
+        points: points
+    };
+    broadcast(msg);
+});

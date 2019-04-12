@@ -1,0 +1,4 @@
+-e git+https://github.com/dkmadigan/python-bayeux-client#egg=python-bayeux-client
+requests
+twisted[tls]
+zope.interface
