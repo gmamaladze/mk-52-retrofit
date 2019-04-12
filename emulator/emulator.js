@@ -1808,7 +1808,7 @@ function buttonPress(x, y) {
 }
 
 function display(digits, points) {
-    console.log(digits);
+    // console.log(digits);
 }
 
 function sync() {

@@ -2,17 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da3f840a-1a3b-4f24-b616-b646af7f1552" name="Default Changelist" comment="Default Changelist">
-      <change afterPath="$PROJECT_DIR$/controller/calculator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/controller.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/emulator/emulator.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/emulator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/keypad.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/controller/leddisplay.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/doc/MK-52-schematics.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/doc/doc.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/calculator.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/controller/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/emulator/emulator.js" beforeDir="false" afterPath="$PROJECT_DIR$/emulator/emulator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/emulator/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/emulator/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/emulator/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/emulator/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/emulator/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/emulator/server.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -22,7 +22,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/mk_52_retrofit$calculator.coverage" NAME="calculator Coverage Results" MODIFIED="1555019612164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/controller" />
+    <SUITE FILE_PATH="coverage/mk_52_retrofit$calculator.coverage" NAME="calculator Coverage Results" MODIFIED="1555075803392" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/controller" />
     <SUITE FILE_PATH="coverage/mk_52_retrofit$converter.coverage" NAME="converter Coverage Results" MODIFIED="1554927405768" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FUSProjectUsageTrigger">
@@ -38,34 +38,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/emulator/package.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="24" selection-start-line="11" selection-start-column="24" selection-end-line="11" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="server.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/emulator/server.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
-              <caret line="35" lean-forward="true" selection-start-line="35" selection-end-line="35" />
+            <state relative-caret-position="171">
+              <caret line="23" column="22" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="22" />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="emulator.iml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/emulator/emulator.iml">
-          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/emulator/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="87">
-              <caret line="193" column="31" selection-start-line="193" selection-start-column="31" selection-end-line="193" selection-end-column="31" />
+            <state relative-caret-position="698">
+              <caret line="293" column="124" selection-start-line="293" selection-start-column="105" selection-end-line="293" selection-end-column="124" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
@@ -75,62 +61,64 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="calculator.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/controller/calculator.py">
+      <file leaf-file-name="app.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/controller/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="40" selection-start-line="6" selection-start-column="40" selection-end-line="6" selection-end-column="40" />
+            <state relative-caret-position="60">
+              <caret line="4" column="2" selection-start-line="4" selection-start-column="2" selection-end-line="4" selection-end-column="2" />
               <folding>
-                <element signature="e#0#38#0" expanded="true" />
+                <element signature="e#0#15#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/python_bayeux/__init__.py">
+      <file leaf-file-name="keypad.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/controller/keypad.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file leaf-file-name="emulator.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/controller/emulator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="184" selection-start-line="184" selection-end-line="184" />
+            <state relative-caret-position="369">
+              <caret line="32" column="28" selection-start-line="32" selection-start-column="28" selection-end-line="32" selection-end-column="28" />
+              <folding>
+                <element signature="e#0#16#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4245">
-              <caret line="283" column="46" selection-start-line="283" selection-start-column="46" selection-end-line="283" selection-end-column="46" />
-            </state>
-          </provider>
+      <file leaf-file-name="controller.iml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/controller/controller.iml">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file leaf-file-name="leddisplay.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/controller/leddisplay.py">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file leaf-file-name="requirements.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/controller/requirements.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="14" selection-start-line="3" selection-start-column="14" selection-end-line="3" selection-end-column="14" />
+            <state relative-caret-position="15">
+              <caret line="1" column="16" selection-start-line="1" selection-start-column="16" selection-end-line="1" selection-end-column="16" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor>
-                <caret column="41" selection-start-column="41" selection-end-column="41" />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
+      <file leaf-file-name="doc.iml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/doc/doc.iml">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file leaf-file-name="emulator.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="emulator.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/emulator/emulator.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="129">
-              <caret line="1812" selection-start-line="1812" selection-end-line="1812" />
+            <state relative-caret-position="205">
+              <caret line="1810" column="7" selection-start-line="1810" selection-start-column="7" selection-end-line="1810" selection-end-column="7" />
               <folding>
                 <element signature="n#style#0;n#textarea#0;n#center#0;n#!!top" expanded="true" />
                 <element signature="e#3#9#0" expanded="true" />
@@ -190,11 +178,15 @@
         <option value="$PROJECT_DIR$/emulator/package.json" />
         <option value="$PROJECT_DIR$/emulator/node_modules/index.html" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/controller/requirements.txt" />
-        <option value="$PROJECT_DIR$/controller/calculator.py" />
-        <option value="$PROJECT_DIR$/emulator/emulator.js" />
         <option value="$PROJECT_DIR$/emulator/index.html" />
         <option value="$PROJECT_DIR$/emulator/server.js" />
+        <option value="$PROJECT_DIR$/controller/requirements.txt" />
+        <option value="$PROJECT_DIR$/emulator/emulator.js" />
+        <option value="$PROJECT_DIR$/controller/keyboard.py" />
+        <option value="$PROJECT_DIR$/controller/led-display.py" />
+        <option value="$PROJECT_DIR$/controller/calculator.py" />
+        <option value="$PROJECT_DIR$/controller/emulator.py" />
+        <option value="$PROJECT_DIR$/controller/app.py" />
       </list>
     </option>
   </component>
@@ -236,6 +228,10 @@
             </path>
             <path>
               <item name="mk-52-retrofit" type="b2602c69:ProjectViewProjectNode" />
+              <item name="doc" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="mk-52-retrofit" type="b2602c69:ProjectViewProjectNode" />
               <item name="emulator" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -258,11 +254,13 @@
     <property name="settings.editor.selected.configurable" value="configurable.group.language" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/emulator" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/../doc/mk-52-retrofit" />
       <recent name="$PROJECT_DIR$" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/doc" />
+      <recent name="$PROJECT_DIR$/emulator" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -383,7 +381,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/controller/calculator.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/controller/app.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -527,12 +525,12 @@
       <workItem from="1554923623373" duration="955000" />
       <workItem from="1554924584093" duration="265000" />
       <workItem from="1554925426903" duration="19276000" />
-      <workItem from="1555017261852" duration="7140000" />
+      <workItem from="1555017261852" duration="12301000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="27644000" />
+    <option name="totallyTimeSpent" value="32805000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="877" extended-state="0" />
@@ -546,15 +544,16 @@
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="right" id="Maven Projects" order="3" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.501868" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3237858" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32876712" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4975" visible="true" weight="0.2638889" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6869245" visible="true" weight="0.2638889" />
       <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32876712" />
       <window_info anchor="right" id="SciView" order="3" />
-      <window_info id="Structure" order="1" sideWeight="0.5025" side_tool="true" visible="true" weight="0.2638889" />
+      <window_info id="Structure" order="1" sideWeight="0.3130755" side_tool="true" visible="true" weight="0.2638889" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info id="UI Designer" order="2" />
       <window_info anchor="right" id="Theme Preview" order="3" />
@@ -563,7 +562,6 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32876712" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
     </layout>
@@ -654,12 +652,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/controller/calculator.py">
+    <entry file="file://$PROJECT_DIR$/controller/app.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
           <folding>
-            <element signature="e#0#38#0" expanded="true" />
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -700,13 +698,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/controller/requirements.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="14" selection-start-line="3" selection-start-column="14" selection-end-line="3" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/venv/src/python-bayeux-client/bayeux/bayeux_client.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -714,30 +705,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/controller/calculator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="40" selection-start-line="6" selection-start-column="40" selection-end-line="6" selection-end-column="40" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/emulator/emulator.iml">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/emulator/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="87">
-          <caret line="193" column="31" selection-start-line="193" selection-start-column="31" selection-end-line="193" selection-end-column="31" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#td#0;n#tr#1;n#tbody#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/emulator/package.json">
       <provider selected="true" editor-type-id="text-editor">
@@ -746,17 +715,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/emulator/server.js">
+    <entry file="file://$PROJECT_DIR$/doc/doc.iml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controller/requirements.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="35" lean-forward="true" selection-start-line="35" selection-end-line="35" />
+        <state relative-caret-position="15">
+          <caret line="1" column="16" selection-start-line="1" selection-start-column="16" selection-end-line="1" selection-end-column="16" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/emulator/emulator.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="1812" selection-start-line="1812" selection-end-line="1812" />
+        <state relative-caret-position="205">
+          <caret line="1810" column="7" selection-start-line="1810" selection-start-column="7" selection-end-line="1810" selection-end-column="7" />
           <folding>
             <element signature="n#style#0;n#textarea#0;n#center#0;n#!!top" expanded="true" />
             <element signature="e#3#9#0" expanded="true" />
@@ -773,6 +745,54 @@
             <element signature="e#10#16#0" expanded="true" />
             <element signature="e#3#9#0" expanded="true" />
             <element signature="e#10#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/emulator/server.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="23" column="22" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controller/leddisplay.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controller/keypad.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/emulator/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="698">
+          <caret line="293" column="124" selection-start-line="293" selection-start-column="105" selection-end-line="293" selection-end-column="124" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#td#0;n#tr#1;n#tbody#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controller/emulator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="369">
+          <caret line="32" column="28" selection-start-line="32" selection-start-column="28" selection-end-line="32" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controller/controller.iml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controller/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="2" selection-start-line="4" selection-start-column="2" selection-end-line="4" selection-end-column="2" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -830,7 +850,7 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>emulator</last-edited>
+          <last-edited>doc</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
