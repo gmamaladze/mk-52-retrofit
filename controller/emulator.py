@@ -55,13 +55,8 @@ class Emulator:
         self.ws.send(json.dumps(message))
 
     def display(self, message):
-        text = ''
         digits = message['digits']
         points = message['points']
-        for position in range(0, 12):
-            text += digits[position]
-            point = points[position]
-            if point != ' ':
-                text += point
+        is_dimmed = message['is_dimmed']
         if self.on_display is not None:
-            self.on_display(text)
+            self.on_display(digits, points, is_dimmed)

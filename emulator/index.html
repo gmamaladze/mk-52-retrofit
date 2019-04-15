@@ -162,7 +162,12 @@
         ws.send(JSON.stringify(msg));
     };
 
-    function display(digits, points) {
+    function display(digits, points, is_dimmed) {
+
+        if (!is_dimmed) var color = "#73FBDE";
+        else var color = "#43CBAE";
+        for (var i = 0; i < 12; i++) document.getElementById("Знакоместо_"+i).style.color = color;
+
         for (var pos = 0; pos < 12; pos++) {
             document.getElementById("Знакоместо_" + pos).value = digits.charAt(pos);
             document.getElementById("Знакоместо_" + pos).value += points.charAt(pos);
@@ -193,7 +198,7 @@
 
         switch (msg.action) {
             case "display":
-                display(msg.digits, msg.points);
+                display(msg.digits, msg.points, msg.is_dimmed);
                 break;
         }
     };

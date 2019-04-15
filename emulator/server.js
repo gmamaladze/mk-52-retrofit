@@ -50,11 +50,12 @@ app.listen(port, function () {
     console.log('Listening on port:' + port);
 });
 
-emulator.onDisplay(function (digits, points) {
+emulator.onDisplay(function (digits, points, is_dimmed) {
     var msg = {
         action: 'display',
         digits: digits,
-        points: points
+        points: points,
+        is_dimmed: is_dimmed
     };
     broadcast(msg);
 });

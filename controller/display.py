@@ -20,9 +20,19 @@ class Display:
     CUSTOM_CHAR_CODE = 0
 
     def __init__(self):
-        lcd.setRGB(0, 255, 0)
         lcd.create_char(Display.CUSTOM_CHAR_CODE, Display.RUSSIAN_R_PATTERN)
 
-    def show(self, text):
+    def show(self, digits, points, is_dimmed):
+        text = ''
+        for position in range(0, 12):
+            text += digits[position]
+            point = points[position]
+            if point != ' ':
+                text += point
         text = text.replace("Г", chr(Display.CUSTOM_CHAR_CODE))
         lcd.setText(text)
+
+        if is_dimmed:
+            lcd.setRGB(0x43, 0xCB, 0xAE)
+        else:
+            lcd.setRGB(0x73, 0xFB, 0xDE)

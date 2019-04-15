@@ -865,18 +865,14 @@ function Изменить_яркость(ярче) {
 var Символы_разрядов = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-", "L", "С", "Г", "Е", " "];
 
 function Отобразить_индикатор() {
-    if (режим_счёта != (ИК1302.запятая == 11)) {
-        Изменить_яркость(режим_счёта);
-        режим_счёта = !режим_счёта;
-    }
-
+    var is_dimmed = ИК1302.запятая !== 11;
     var digits = "";
     var points = "";
     for (var сч = 0; сч < 12; сч++) {
         digits += Символы_разрядов[Индикатор[сч]];
         points += (Индик_зпт[сч] ? "," : " ");
     }
-    display(digits, points);
+    display(digits, points, is_dimmed);
 }
 
 function Прочитать_число(микросхема, адрес) {
@@ -1807,7 +1803,7 @@ function buttonPress(x, y) {
     Нажатие_кнопки(x, y)
 }
 
-function display(digits, points) {
+function display(digits, points, is_dimmed) {
     // console.log(digits);
 }
 
