@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da3f840a-1a3b-4f24-b616-b646af7f1552" name="Default Changelist" comment="Default Changelist">
-      <change beforePath="$PROJECT_DIR$/controller/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/display.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/emulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/emulator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/emulator/emulator.js" beforeDir="false" afterPath="$PROJECT_DIR$/emulator/emulator.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/emulator/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/emulator/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/emulator/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/emulator/server.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -118,20 +114,20 @@
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file leaf-file-name="display.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="display.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/controller/display.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="22" selection-start-line="22" selection-end-line="22" />
+            <state relative-caret-position="270">
+              <caret line="30" selection-start-line="30" selection-end-line="30" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="emulator.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="emulator.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/emulator/emulator.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="861" column="97" lean-forward="true" selection-start-line="861" selection-start-column="4" selection-end-line="861" selection-end-column="97" />
+            <state relative-caret-position="177">
+              <caret line="1009" column="23" selection-start-line="1009" selection-start-column="17" selection-end-line="1009" selection-end-column="23" />
               <folding>
                 <element signature="n#style#0;n#textarea#0;n#center#0;n#!!top" expanded="true" />
                 <element signature="e#3#9#0" expanded="true" />
@@ -176,6 +172,9 @@
       <find>знакоместо</find>
       <find>индикатор</find>
       <find>Отобразить_индикатор</find>
+      <find>slee</find>
+      <find>setTim</find>
+      <find>setint</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -199,11 +198,11 @@
         <option value="$PROJECT_DIR$/controller/grove-rgb-lcd.py" />
         <option value="$PROJECT_DIR$/controller/app.py" />
         <option value="$PROJECT_DIR$/controller/keypad.py" />
-        <option value="$PROJECT_DIR$/emulator/emulator.js" />
         <option value="$PROJECT_DIR$/emulator/index.html" />
         <option value="$PROJECT_DIR$/emulator/server.js" />
         <option value="$PROJECT_DIR$/controller/emulator.py" />
         <option value="$PROJECT_DIR$/controller/display.py" />
+        <option value="$PROJECT_DIR$/emulator/emulator.js" />
       </list>
     </option>
   </component>
@@ -543,12 +542,12 @@
       <workItem from="1554923623373" duration="955000" />
       <workItem from="1554924584093" duration="265000" />
       <workItem from="1554925426903" duration="19276000" />
-      <workItem from="1555017261852" duration="36122000" />
+      <workItem from="1555017261852" duration="36343000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="56626000" />
+    <option name="totallyTimeSpent" value="56847000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="877" extended-state="0" />
@@ -791,10 +790,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/emulator/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="188">
+          <caret line="167" column="35" lean-forward="true" selection-start-line="166" selection-start-column="36" selection-end-line="167" selection-end-column="35" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#td#0;n#tr#0;n#tbody#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#0;n#td#0;n#tr#0;n#table#0;n#td#0;n#tr#0;n#tbody#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controller/display.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/emulator/emulator.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="861" column="97" lean-forward="true" selection-start-line="861" selection-start-column="4" selection-end-line="861" selection-end-column="97" />
+        <state relative-caret-position="177">
+          <caret line="1009" column="23" selection-start-line="1009" selection-start-column="17" selection-end-line="1009" selection-end-column="23" />
           <folding>
             <element signature="n#style#0;n#textarea#0;n#center#0;n#!!top" expanded="true" />
             <element signature="e#3#9#0" expanded="true" />
@@ -812,26 +831,6 @@
             <element signature="e#3#9#0" expanded="true" />
             <element signature="e#10#16#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/emulator/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="167" column="35" lean-forward="true" selection-start-line="166" selection-start-column="36" selection-end-line="167" selection-end-column="35" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#td#0;n#tr#0;n#tbody#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#td#0;n#tr#0;n#table#0;n#td#0;n#tr#0;n#tbody#0;n#table#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/controller/display.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
         </state>
       </provider>
     </entry>
