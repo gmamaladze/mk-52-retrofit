@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="da3f840a-1a3b-4f24-b616-b646af7f1552" name="Default Changelist" comment="Default Changelist">
-      <change beforePath="$PROJECT_DIR$/controller/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/display.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/keypad.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/keypad.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -53,11 +52,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="keypad.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="keypad.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/controller/keypad.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="32" selection-start-line="6" selection-start-column="32" selection-end-line="6" selection-end-column="32" />
+            <state relative-caret-position="300">
+              <caret line="20" column="60" selection-start-line="20" selection-start-column="60" selection-end-line="20" selection-end-column="60" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -115,7 +114,7 @@
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file leaf-file-name="display.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="display.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/controller/display.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
@@ -198,8 +197,8 @@
         <option value="$PROJECT_DIR$/emulator/index.html" />
         <option value="$PROJECT_DIR$/controller/grove-rgb-lcd.py" />
         <option value="$PROJECT_DIR$/controller/app.py" />
-        <option value="$PROJECT_DIR$/controller/keypad.py" />
         <option value="$PROJECT_DIR$/controller/display.py" />
+        <option value="$PROJECT_DIR$/controller/keypad.py" />
       </list>
     </option>
   </component>
@@ -539,12 +538,12 @@
       <workItem from="1554923623373" duration="955000" />
       <workItem from="1554924584093" duration="265000" />
       <workItem from="1554925426903" duration="19276000" />
-      <workItem from="1555017261852" duration="33847000" />
+      <workItem from="1555017261852" duration="34469000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="54351000" />
+    <option name="totallyTimeSpent" value="54973000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="877" extended-state="0" />
@@ -814,20 +813,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/controller/keypad.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="32" selection-start-line="6" selection-start-column="32" selection-end-line="6" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/controller/display.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
           <caret line="16" column="12" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controller/keypad.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="60" selection-start-line="20" selection-start-column="60" selection-end-line="20" selection-end-column="60" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

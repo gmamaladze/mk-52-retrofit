@@ -18,7 +18,7 @@ class Keypad:
     ROW_TO_Y = [0, 1, 8, 9]
 
     def __init__(self, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14):
-        self.column_channels = [_4, _6, _5, _11, _9, _7, _8, _3, _2, _10]
+        self.column_channels = [_4, _6, _5, _11, _9, _8, _7, _3, _2, _10]
         self.row_channels = [_1, _12, _13, _14]
         self.subscribed = False
         for row_channel in self.row_channels:
