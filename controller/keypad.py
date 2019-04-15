@@ -18,11 +18,11 @@ class Keypad:
     ROW_TO_Y = [0, 1, 8, 9]
 
     def __init__(self, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14):
-        self.column_channels = [_4, _6, _5, _11, _9, _7, _8, _3, _2, _10, _1]
+        self.column_channels = [_4, _6, _5, _11, _9, _7, _8, _3, _2, _10]
         self.row_channels = [_1, _12, _13, _14]
         self.subscribed = False
         for row_channel in self.row_channels:
-            GPIO.setup(row_channel, GPIO.IN)
+            GPIO.setup(row_channel, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         for column_channel in self.column_channels:
             GPIO.setup(column_channel, GPIO.OUT, initial=1)
 
@@ -32,7 +32,7 @@ class Keypad:
         for column_channel in self.column_channels:
             GPIO.output(column_channel, 1)
         for row_channel in self.row_channels:
-            GPIO.add_event_detect(row_channel, GPIO.RISING, bouncetime=200)
+            GPIO.add_event_detect(row_channel, GPIO.RISING, bouncetime=1000)
         self.subscribed = True
 
     def unsubscribe(self):
@@ -45,14 +45,14 @@ class Keypad:
         self.subscribed = False
 
     def try_detect_row_idx(self):
-        for i, row_channel in self.row_channels:
+        for i, row_channel in enumerate(self.row_channels):
             if GPIO.event_detected(row_channel):
                 return i, True
         return -1, False
 
     def try_detect_column_idx(self, row_idx):
         row_channel = self.row_channels[row_idx]
-        for j, column_channel in self.column_channels:
+        for j, column_channel in enumerate(self.column_channels):
             GPIO.output(column_channel, 1)
             time.sleep(Keypad.SCAN_INTERVAL_SECONDS)
             if GPIO.input(row_channel):
