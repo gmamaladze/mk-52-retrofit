@@ -14,7 +14,7 @@ class Display:
         0b01000,
         0b01000,
         0b01000,
-        0b01000
+        0b00000
     ]
 
     CUSTOM_CHAR_CODE = 0
