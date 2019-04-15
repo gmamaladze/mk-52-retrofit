@@ -33,6 +33,6 @@ class Display:
         lcd.setText(text)
 
         if is_dimmed:
-            lcd.setRGB(0x43, 0xCB, 0xAE)
+            lcd.setRGB(0x00, 0xFF, 0x00)
         else:
             lcd.setRGB(0x73, 0xFB, 0xDE)

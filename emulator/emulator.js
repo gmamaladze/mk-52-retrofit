@@ -1007,7 +1007,7 @@ function Включить() {
     ИК1302 = new ИК13(), ИК1303 = new ИК13();
     if (расширенный) ИК1306 = new ИК13();
     Заполнить_ПЗУ();
-    исполнение = setInterval(Шаг, 100);
+    исполнение = setInterval(Шаг, 30);
     Шаг();
 }
 
@@ -1032,7 +1032,7 @@ function Пауза() {
     if (пауза)  {
         пауза = false;
         document.getElementById("Пауза").value = "Стоп";
-        исполнение = setInterval(Шаг, 100);
+        исполнение = setInterval(Шаг, 30);
         Шаг();
     }
     else {
@@ -1396,7 +1396,7 @@ function Ввести_код() {
     var команды = document.getElementById("Код").textContent.replace(/^\s+|\s+$/g, "").split(/\s+/).slice(0, расширенный ? 105 : 98);
     for (var сч = 0; сч < команды.length; сч++) Добавить_команду(команды[сч], сч);
     if (!выключен) for (var сч = команды.length; сч < (расширенный ? 105 : 98); сч++) Записать_в_память(сч, 0);
-    исполнение = setInterval(Шаг, 100);
+    исполнение = setInterval(Шаг, 30);
     if (выключен) document.getElementById("ВКЛ").checked = true;
 }
 
@@ -1504,7 +1504,7 @@ function Прочитать_код() {
             for (доп_сч = 0; доп_сч <= ширины_столбцов[сч % 10] - команды[сч].length; доп_сч++)
                 document.getElementById("Код").innerHTML += "&nbsp;";
     }
-    if (!пауза) исполнение = setInterval(Шаг, 100);
+    if (!пауза) исполнение = setInterval(Шаг, 30);
 }
 
 function Прочитать_состояние() {
@@ -1569,7 +1569,7 @@ function Прочитать_состояние() {
     }
     var окно = window.open("", "Состояние", "width=400px, height=150px");
     окно.document.body.innerHTML = '<center><textarea style="width: 350px; height: 125px;">' + вывод + "</textarea></center>";
-    if (!пауза) исполнение = setInterval(Шаг, 100);
+    if (!пауза) исполнение = setInterval(Шаг, 30);
 }
 
 function Ввести_состояние() {
@@ -1636,7 +1636,7 @@ function Ввести_состояние() {
             микросхемы[сч_1].индик_зпт[сч_2] = parseInt(состояние[сч_2 + 331 + 168 * сч_1]);
     }
     document.getElementById("ВКЛ").checked = true;
-    исполнение = setInterval(Шаг, 100);
+    исполнение = setInterval(Шаг, 30);
     Шаг();
 }
 
