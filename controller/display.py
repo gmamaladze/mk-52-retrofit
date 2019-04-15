@@ -24,5 +24,5 @@ class Display:
         lcd.create_char(Display.CUSTOM_CHAR_CODE, Display.RUSSIAN_R_PATTERN)
 
     def show(self, text):
-        test = text.replace("Г", chr(Display.CUSTOM_CHAR_CODE))
+        text = text.replace("Г", chr(Display.CUSTOM_CHAR_CODE))
         lcd.setText(text)
