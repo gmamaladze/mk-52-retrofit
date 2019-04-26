@@ -46,6 +46,12 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+
+app.post('/ping', function (req, res) {
+    res.sendStatus(200)
+});
+
+
 app.listen(port, function () {
     console.log('Listening on port:' + port);
 });

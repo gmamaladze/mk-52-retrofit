@@ -22,6 +22,10 @@ class Display:
     def __init__(self):
         lcd.create_char(Display.CUSTOM_CHAR_CODE, Display.RUSSIAN_R_PATTERN)
 
+    def log(self, text):
+        lcd.setRGB(0x73, 0xFB, 0xDE)
+        lcd.setText(text)
+
     def show(self, digits, points, is_dimmed):
         text = ''
         for position in range(0, 12):

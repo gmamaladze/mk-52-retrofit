@@ -1,15 +1,31 @@
 import websocket
 import json
 import threading
+import subprocess
+import time
+import requests
 
 
 class Emulator:
 
-    def __init__(self, url, on_display=None):
+    def __init__(self, url, on_display=None, on_log=None):
         self.url = url
         self.on_display = on_display
+        self.on_log = on_log
 
     def __enter__(self):
+        self.server = subprocess.Popen('node server.js', shell=True, cwd='../emulator/', stdout=subprocess.PIPE,)
+        time.sleep(2)
+        while True:
+            if self.on_log is not None:
+                self.on_log("Initializing...")
+            try:
+                r = requests.post("http://localhost:8080/ping")
+                if r.status_code == requests.codes.ok:
+                    break
+            except:
+                pass
+            time.sleep(0.5)
 
         opened_event = threading.Event()
 
@@ -45,6 +61,7 @@ class Emulator:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.ws.close()
+        self.server.kill()
 
     def press_button(self, x, y):
         message = {
