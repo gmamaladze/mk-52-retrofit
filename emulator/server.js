@@ -51,6 +51,11 @@ app.post('/ping', function (req, res) {
     res.sendStatus(200)
 });
 
+app.put('/program', function (req, res) {
+    let sourceCode = req.query.code;
+    emulator.load(sourceCode)
+});
+
 
 app.listen(port, function () {
     console.log('Listening on port:' + port);

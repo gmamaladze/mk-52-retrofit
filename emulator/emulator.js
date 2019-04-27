@@ -1347,7 +1347,7 @@ function Адрес_команды(номер, перестановка) {
     }
 }
 
-function Ввести_код() {
+function Ввести_код(sourceCode) {
     var выключен = (ИР2_1 === undefined) || (ИР2_1 == null);
     if (выключен) {
         ИР2_1 = new ИР2(), ИР2_2 = new ИР2();
@@ -1392,12 +1392,13 @@ function Ввести_код() {
         if (индекс == -1)
             Записать_в_память(номер, parseInt(команда, 16));
     }
-    document.getElementById("Код").innerHTML = document.getElementById("Код").innerHTML.replace(/(<)(br|div|p)/g, " <$2");
-    var команды = document.getElementById("Код").textContent.replace(/^\s+|\s+$/g, "").split(/\s+/).slice(0, расширенный ? 105 : 98);
+
+
+    var команды = sourceCode.replace(/^\s+|\s+$/g, "").split(/\s+/).slice(0, расширенный ? 105 : 98);
     for (var сч = 0; сч < команды.length; сч++) Добавить_команду(команды[сч], сч);
     if (!выключен) for (var сч = команды.length; сч < (расширенный ? 105 : 98); сч++) Записать_в_память(сч, 0);
     исполнение = setInterval(Шаг, 30);
-    if (выключен) document.getElementById("ВКЛ").checked = true;
+    //if (выключен) document.getElementById("ВКЛ").checked = true;
 }
 
 function Прочитать_код() {
@@ -1815,9 +1816,14 @@ function onDisplay(func) {
     display = func;
 }
 
+function load(sourceCode) {
+    Ввести_код(sourceCode)
+}
+
 module.exports = {
     keyPress,
     buttonPress,
     sync,
-    onDisplay
+    onDisplay,
+    load
 };

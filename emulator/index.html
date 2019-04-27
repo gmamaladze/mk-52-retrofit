@@ -148,7 +148,6 @@
 
 <input type="text" id="display">
 
-<script type="text/javascript" src="http://localhost:8080/faye/client.js"></script>
 
 <script type="text/javascript">
 
@@ -166,7 +165,7 @@
 
         if (!is_dimmed) var color = "#73FBDE";
         else var color = "#43CBAE";
-        for (var i = 0; i < 12; i++) document.getElementById("Знакоместо_"+i).style.color = color;
+        for (var i = 0; i < 12; i++) document.getElementById("Знакоместо_" + i).style.color = color;
 
         for (var pos = 0; pos < 12; pos++) {
             document.getElementById("Знакоместо_" + pos).value = digits.charAt(pos);
@@ -202,6 +201,16 @@
                 break;
         }
     };
+
+    function loadSourceCode(source_code) {
+        let baseUrl = 'http://' + window.location.hostname + ':' + window.location.port;
+        fetch( baseUrl + '/program?code=' + encodeURIComponent(source_code),
+            {method: "PUT"})
+            .then(function(response) {
+                console.log(response)
+                document.getElementById('load').disabled=true
+            });
+    }
 
 </script>
 
@@ -374,6 +383,15 @@
         </tbody>
     </table>
 </div>
+
+<div style="position: absolute; top: 350px;">
+    <textarea style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;"
+              id="source_code" cols="60" rows="10" placeholder="Input source code here. e.g. ИП8 * ИП3 + П9 x^2 ^ ИП3 x^2"
+              onchange="document.getElementById('load').disabled=false"></textarea>
+    <br>
+    <button id="load" onclick="loadSourceCode(document.getElementById('source_code').value)">Load</button>
+</div>
+
 
 </body>
 </html>
