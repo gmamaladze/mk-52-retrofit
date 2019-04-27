@@ -1401,11 +1401,13 @@ function Ввести_код(sourceCode) {
     //if (выключен) document.getElementById("ВКЛ").checked = true;
 }
 
-function Прочитать_код() {
-    document.getElementById("Код").innerHTML = "";
+/**
+ * @return {string}
+ */
+function Прочитать_код(useHexCommandCodes = false, omitLineNumbers = true, useRichFormat = false) {
+    var sourceCode = "";
     if ((ИР2_1 === undefined) || (ИР2_1 == null)) {
-        document.getElementById("Код").innerHTML = "<br />";
-        return;
+        return "";
     }
     clearInterval(исполнение);
     var команды = [];
@@ -1436,10 +1438,10 @@ function Прочитать_код() {
             for (сч_к = 0; сч_к < мнемоники_команд.length; сч_к++) {
                 if (мнемоники_команд[сч_к][2] == 1) {
                     if ((((код / 0x10) | 0) == мнемоники_команд[сч_к][0] / 0x10) && (код % 0x10 < 0xF)) {
-                        if (document.getElementById("Числовые_значения").checked)
+                        if (useHexCommandCodes)
                             команды[сч] += (код / 0x10 | 0).toString(16).toUpperCase() + (код % 0x10).toString(16).toUpperCase();
                         else
-                        if (document.getElementById("Простой_код").checked)
+                        if (omitLineNumbers)
                             команды[сч] += мнемоники_команд[сч_к][1][0] + (код % 0x10).toString(16).toUpperCase();
                         else
                             команды[сч] += мнемоники_команд[сч_к][1][мнемоники_команд[сч_к][4]] + (код % 0x10).toString(16).toUpperCase();
@@ -1448,10 +1450,10 @@ function Прочитать_код() {
                 }
                 else {
                     if (код == мнемоники_команд[сч_к][0]) {
-                        if (document.getElementById("Числовые_значения").checked)
+                        if (useHexCommandCodes)
                             команды[сч] += (код / 0x10 | 0).toString(16).toUpperCase() + (код % 0x10).toString(16).toUpperCase();
                         else
-                        if (document.getElementById("Простой_код").checked)
+                        if (omitLineNumbers)
                             команды[сч] += мнемоники_команд[сч_к][1][0];
                         else
                             команды[сч] += мнемоники_команд[сч_к][1][мнемоники_команд[сч_к][4]];
@@ -1460,7 +1462,7 @@ function Прочитать_код() {
                 }
             }
             if (сч_к == мнемоники_команд.length) {
-                if (document.getElementById("Числовые_значения").checked)
+                if (useHexCommandCodes)
                     команды[сч] += (код / 0x10 | 0).toString(16).toUpperCase() + (код % 0x10).toString(16).toUpperCase();
                 else
                     команды[сч] += код.toString(16).toUpperCase();
@@ -1482,30 +1484,31 @@ function Прочитать_код() {
     for (сч = 0; сч < (расширенный ? 5 : 8); сч++)
         if (команды[(расширенный ? 100 : 90) + сч].length > ширины_столбцов[сч]) ширины_столбцов[сч] = команды[(расширенный ? 100 : 90) + сч].length;
     for (сч = 0; сч < (расширенный ? 105 : 98); сч++) {
-        if (document.getElementById("Подсветка").checked) {
-            if (!document.getElementById("Простой_код").checked)
-                document.getElementById("Код").innerHTML +=
+        if (useRichFormat) {
+            if (!omitLineNumbers)
+                sourceCode +=
                     '<span class="подсв_ном">' + ((сч < 100) ? ((сч < 10) ? "0" + сч : сч) : "A" + (сч % 10)) + ".</span>";
-            if (наличия_префикса[сч] && !document.getElementById("Числовые_значения").checked && !document.getElementById("Простой_код").checked)
-                document.getElementById("Код").innerHTML +=
+            if (наличия_префикса[сч] && !useHexCommandCodes && !omitLineNumbers)
+                sourceCode +=
                     '<span class="подсв_' + группы_команд[сч] + '">' +
                     '<span class="подсв_преф">' + команды[сч][0] + "</span>" +
                     команды[сч].slice(1) + "</span>";
             else
-                document.getElementById("Код").innerHTML += '<span class="подсв_' + группы_команд[сч] + '">' + команды[сч] + "</span>";
+                sourceCode += '<span class="подсв_' + группы_команд[сч] + '">' + команды[сч] + "</span>";
         }
         else {
-            if (!document.getElementById("Простой_код").checked)
-                document.getElementById("Код").innerHTML += ((сч < 100) ? ((сч < 10) ? "0" + сч : сч) : "A" + (сч % 10)) + ".";
-            document.getElementById("Код").innerHTML += команды[сч];
+            if (!omitLineNumbers)
+                sourceCode += ((сч < 100) ? ((сч < 10) ? "0" + сч : сч) : "A" + (сч % 10)) + ".";
+            sourceCode += команды[сч];
         }
         if (сч % 10 == 9)
-            document.getElementById("Код").innerHTML += "\n<br />";
+            sourceCode += "\n";
         else
             for (доп_сч = 0; доп_сч <= ширины_столбцов[сч % 10] - команды[сч].length; доп_сч++)
-                document.getElementById("Код").innerHTML += "&nbsp;";
+                sourceCode += " ";
     }
     if (!пауза) исполнение = setInterval(Шаг, 30);
+    return sourceCode;
 }
 
 function Прочитать_состояние() {
@@ -1816,14 +1819,20 @@ function onDisplay(func) {
     display = func;
 }
 
-function load(sourceCode) {
+function push(sourceCode) {
     Ввести_код(sourceCode)
 }
+
+function pull() {
+    return Прочитать_код();
+}
+
 
 module.exports = {
     keyPress,
     buttonPress,
     sync,
     onDisplay,
-    load
+    push: push,
+    pull: pull
 };
