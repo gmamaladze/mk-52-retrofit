@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO
 class Keypad:
 
     SCAN_INTERVAL_SECONDS = 0.0001
-    BOUNCE_TIME_MILLISECONDS = 100
+    BOUNCE_TIME_MILLISECONDS = 10
 
     ROW_COLUMN_TO_KEY = [
         ['', 'A↑', '↑↓', '', '', '', '', '', '', ''],
@@ -32,7 +32,7 @@ class Keypad:
         for column_channel in self.column_channels:
             GPIO.output(column_channel, 1)
         for row_channel in self.row_channels:
-            GPIO.add_event_detect(row_channel, GPIO.RISING, bouncetime=1000)
+            GPIO.add_event_detect(row_channel, GPIO.RISING, bouncetime=self.BOUNCE_TIME_MILLISECONDS)
         self.subscribed = True
 
     def unsubscribe(self):

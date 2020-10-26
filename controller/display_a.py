@@ -1,9 +1,7 @@
-import grove_rgb_lcd as lcd
-
+import driver.grove_rgb_lcd as lcd
 
 
 class Display:
-
     # Display symbols are only: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-", "L", "С", "Г", "Е", " "];
 
     RUSSIAN_R_PATTERN = [
