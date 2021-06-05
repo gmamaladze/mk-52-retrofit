@@ -4,6 +4,7 @@ import threading
 import subprocess
 import time
 import requests
+import asyncio
 
 
 class Emulator:
@@ -14,7 +15,7 @@ class Emulator:
         self.on_log = on_log
 
     def __enter__(self):
-        self.server = subprocess.Popen('node server.js', shell=True, cwd='../emulator/', stdout=subprocess.PIPE,)
+        self.server = subprocess.Popen('node server.js', shell=True, cwd='../emulator/', stdout=subprocess.PIPE, )
         time.sleep(2)
         while True:
             if self.on_log is not None:

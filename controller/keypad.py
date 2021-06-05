@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO
 class Keypad:
 
     SCAN_INTERVAL_SECONDS = 0.0001
-    BOUNCE_TIME_MILLISECONDS = 10
+    BOUNCE_TIME_MILLISECONDS = 1
 
     ROW_COLUMN_TO_KEY = [
         ['', 'A↑', '↑↓', '', '', '', '', '', '', ''],

@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="da3f840a-1a3b-4f24-b616-b646af7f1552" name="Default Changelist" comment="Fixed title">
-      <change afterPath="$PROJECT_DIR$/controller/display_b.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/driver/lcd_i2c_driver.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/doc/KeypadWiring.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/doc/RapsberryPIWiring.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/doc/SoftwareArchitecture.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="da3f840a-1a3b-4f24-b616-b646af7f1552" name="Default Changelist" comment="Changed LCD display type.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/display.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/display_a.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/grove_rgb_lcd.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/driver/grove_rgb_lcd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/emulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/emulator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/keypad.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/keypad.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/controller/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/emulator/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/emulator/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/emulator/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/emulator/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,10 +49,11 @@
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="TF_FMT" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="go.import.settings.migrated" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/controller" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -83,6 +79,19 @@
     </key>
   </component>
   <component name="RunManager">
+    <configuration default="true" type="PyLettuceRunConfigurationType" factoryName="Lettuce">
+      <module name="mk-52-retrofit" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="ADDITIONAL_ARGS" value="" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="Application" factoryName="Application">
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <method v="2">
@@ -118,31 +127,11 @@
     </configuration>
     <configuration default="true" type="JetRunConfigurationType">
       <module name="mk-52-retrofit" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="WORKING_DIRECTORY" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <configuration default="true" type="PyBehaveRunConfigurationType" factoryName="Behave">
-      <module name="mk-52-retrofit" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="ADDITIONAL_ARGS" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="PyLettuceRunConfigurationType" factoryName="Lettuce">
       <module name="mk-52-retrofit" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -336,7 +325,9 @@
       <workItem from="1575535829476" duration="341000" />
       <workItem from="1575889948326" duration="6000" />
       <workItem from="1603696452865" duration="1718000" />
-      <workItem from="1603698330389" duration="5061000" />
+      <workItem from="1603698330389" duration="8745000" />
+      <workItem from="1604000893682" duration="84000" />
+      <workItem from="1622877832903" duration="444000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed title">
       <created>1556373300607</created>
@@ -345,7 +336,14 @@
       <option name="project" value="LOCAL" />
       <updated>1556373300607</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Changed LCD display type.">
+      <created>1603706879858</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1603706879858</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -353,21 +351,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Fixed title" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed title" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="208" y="43" key="#Project_Structure" timestamp="1603696517039">
-      <screen x="0" y="23" width="1440" height="877" />
-    </state>
-    <state x="208" y="43" key="#Project_Structure/0.23.1440.877@0.23.1440.877" timestamp="1603696517039" />
-    <state x="208" y="43" key="SettingsEditor" timestamp="1603698311754">
-      <screen x="0" y="23" width="1440" height="877" />
-    </state>
-    <state x="208" y="43" key="SettingsEditor/0.23.1440.877@0.23.1440.877" timestamp="1603698311754" />
-    <state x="518" y="382" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1603706301099">
-      <screen x="0" y="23" width="1440" height="877" />
-    </state>
-    <state x="518" y="382" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.1440.877@0.23.1440.877" timestamp="1603706301099" />
+    <MESSAGE value="Changed LCD display type." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed LCD display type." />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

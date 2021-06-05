@@ -3,6 +3,7 @@ import display_a
 import display_b
 import keypad
 import RPi.GPIO as GPIO
+import time
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -17,6 +18,7 @@ def main():
     with emulator.Emulator("ws://localhost:8080/", on_display=dsp.show, on_log=dsp.log) as em:
         for x, y, txt in kbd.get_key_presses():
             em.press_button(x, y)
+            time.sleep(0.1)
 
 
 if __name__ == "__main__":
