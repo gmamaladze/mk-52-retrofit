@@ -151,16 +151,6 @@
 
 <script type="text/javascript">
 
-    document.onkeydown = function (event) {
-        var e = event || window.event;
-        var code = (e.charCode && e.keyCode == 0 ? e.charCode : e.keyCode);
-        var msg = {
-            action: "key",
-            code: code
-        };
-        ws.send(JSON.stringify(msg));
-    };
-
     function display(digits, points, is_dimmed) {
 
         if (!is_dimmed) var color = "#73FBDE";
@@ -174,58 +164,44 @@
     }
 
     function Нажатие_кнопки(x, y) {
-        var msg = {
-            action: "button",
-            x: x,
-            y: y,
-        };
-        ws.send(JSON.stringify(msg));
+        fetch('/press', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({x: x, y: y})
+        });
     }
 
-
-    var ws = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + '/');
-
-    ws.onopen = function (event) {
-        var msg = {
-            action: "sync"
-        };
-        ws.send(JSON.stringify(msg))
-    };
-
-    ws.onmessage = function (event) {
-        var msg = JSON.parse(event.data);
-
-        switch (msg.action) {
-            case "display":
-                display(msg.digits, msg.points, msg.is_dimmed);
-                break;
+    // Ported from emulator.js Нажатие_клавиши — keyboard → (x, y) mapping.
+    document.onkeydown = function (event) {
+        var e = event || window.event;
+        var code = (e.charCode && e.keyCode == 0 ? e.charCode : e.keyCode);
+        if (code >= 48 && code <= 57) return Нажатие_кнопки(code - 46, 1);
+        if (code >= 96 && code <= 105) return Нажатие_кнопки(code - 94, 1);
+        switch (code) {
+            case 13: case 38: case 32: Нажатие_кнопки(11, 8); break; // В↑
+            case 27: case 46: Нажатие_кнопки(10, 8); break;          // Сx
+            case 70: Нажатие_кнопки(11, 9); break;                   // F
+            case 75: Нажатие_кнопки(10, 9); break;                   // K
+            case 106: Нажатие_кнопки(4, 8); break;                   // *
+            case 107: Нажатие_кнопки(2, 8); break;                   // +
+            case 109: Нажатие_кнопки(3, 8); break;                   // -
+            case 111: Нажатие_кнопки(5, 8); break;                   // /
+            case 110: Нажатие_кнопки(7, 8); break;                   // ,
+            case 37: Нажатие_кнопки(7, 9); break;                    // ШГ←
+            case 39: Нажатие_кнопки(9, 9); break;                    // ШГ→
+            default: break;
         }
     };
 
-    var baseUrl = 'http://' + window.location.hostname + ':' + window.location.port;
-    function push() {
-        document.getElementById('push').disabled=true;
-        var sourceCode = document.getElementById('source_code').value;
-        fetch( baseUrl + '/program?code=' + encodeURIComponent(sourceCode),
-            {method: "PUT"})
-            .then(function(response) {
-                //console.log(response);
-                document.getElementById('push').disabled=false;
-            });
-    }
+    var evt = new EventSource('/events');
+    evt.onmessage = function (event) {
+        var msg = JSON.parse(event.data);
+        display(msg.digits, msg.points, msg.is_dimmed);
+    };
 
-    function pull() {
-        document.getElementById('pull').disabled=true;
-        fetch( baseUrl + '/program',
-            {method: "GET"})
-            .then(function(response) {
-                return response.text();
-            })
-            .then(function(sourceCode) {
-                document.getElementById('pull').disabled=false;
-                document.getElementById('source_code').value = sourceCode;
-            });
-    }
+    // Program load/save not yet ported to the Python emulator.
+    function push() { alert('push: not yet ported'); }
+    function pull() { alert('pull: not yet ported'); }
 
 </script>
 
