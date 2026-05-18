@@ -18,9 +18,12 @@ class Машина:
 
     ПЕРИОД_ШАГА = 0.030  # seconds — matches setInterval(Шаг, 30) in JS
     # Шаг iteration count. Original JS used 560 (calibrated so chip-time matches
-    # real-time). CPython can't sustain 560 per 30 ms; lowering this trades chip
-    # speed for UI responsiveness. The emulated CPU runs at roughly
-    # ИТЕРАЦИЙ_В_ШАГЕ/560 of the original МК-52's speed.
+    # real-time). CPython spends 89% of Такт runtime on int bit-ops; at 560 a
+    # Шаг takes ~76 ms wall-clock, so we run at ИТЕРАЦИЙ_В_ШАГЕ/560 of original.
+    # Under PyPy the JIT makes Шаг ~65× faster and 560 fits well inside the
+    # 30 ms tick — set this to 560 there. We default to 200 for CPython
+    # responsiveness. Run tools/benchmark.py to measure the ceiling on a
+    # given host; see README for the PyPy-on-Pi recipe.
     ИТЕРАЦИЙ_В_ШАГЕ = 200
 
     def __init__(self, on_display=None, on_log=None):
