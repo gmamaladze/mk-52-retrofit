@@ -8,6 +8,7 @@ import threading
 import time
 
 from .chips import ИК13, ИР2
+from .loader import Адрес_команды, ПРОГРАММНЫХ_ШАГОВ, разобрать_команду
 from .rom import ПЗУ
 
 Символы_разрядов = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-", "L", "С", "Г", "Е", " "]
@@ -172,6 +173,50 @@ class Машина:
 
     # Compatibility alias matching the old Emulator.press_button.
     press_button = Нажатие_кнопки
+
+    def Ввести_код(self, source: str) -> int:
+        """Parse MK-52 source and write opcodes directly into program memory.
+        Returns the number of program steps written. Tokens are whitespace-
+        separated; an optional 'NN.' line-number prefix is stripped.
+        """
+        tokens = source.split()
+        # Strip optional 'NN.' / 'AN.' line-number prefixes; the JS parser
+        # used the prefix to set the target step index, but for a simple
+        # in-order listing we just drop it.
+        стрипнутые = []
+        for t in tokens:
+            if len(t) >= 3 and t[2] == "." and (t[0].isdigit() or t[0] in "A-") and t[1].isdigit():
+                t = t[3:]
+            if t:
+                стрипнутые.append(t)
+        commands = стрипнутые[:ПРОГРАММНЫХ_ШАГОВ]
+
+        chips = {
+            1: self.ИР2_1, 2: self.ИР2_2,
+            3: self.ИК1302, 4: self.ИК1303,
+        }
+        with self._lock:
+            перестановка = (self.ИР2_1.микротакт // 84) % len(
+                # 3 permutations
+                (0, 1, 2)
+            )
+            def записать(номер, код):
+                ст = код >> 4
+                мл = код & 0xF
+                chip_id, адрес = Адрес_команды(номер, перестановка)
+                chip = chips[chip_id]
+                chip.M[адрес] = ст
+                chip.M[адрес - 3] = мл
+
+            for i, tok in enumerate(commands):
+                записать(i, разобрать_команду(tok))
+            # Zero remaining program steps so a previous listing doesn't bleed through.
+            for i in range(len(commands), ПРОГРАММНЫХ_ШАГОВ):
+                записать(i, 0)
+            # Ensure the program counter is reset (В/О behavior).
+            self.ИК1302.R[36] = 0
+            self.ИК1302.R[39] = 0
+        return len(commands)
 
     def _Цикл(self):
         next_at = time.monotonic()

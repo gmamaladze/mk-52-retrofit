@@ -199,9 +199,58 @@
         display(msg.digits, msg.points, msg.is_dimmed);
     };
 
-    // Program load/save not yet ported to the Python emulator.
-    function push() { alert('push: not yet ported'); }
-    function pull() { alert('pull: not yet ported'); }
+    var programs = [];
+
+    function fetchPrograms() {
+        return fetch('/programs').then(function (r) { return r.json(); }).then(function (list) {
+            programs = list;
+            var sel = document.getElementById('program_select');
+            sel.innerHTML = '<option value="">— выберите программу —</option>';
+            list.forEach(function (p, i) {
+                var opt = document.createElement('option');
+                opt.value = String(i);
+                opt.textContent = p.title || p.id;
+                sel.appendChild(opt);
+            });
+        });
+    }
+
+    function onSelectProgram() {
+        var idx = document.getElementById('program_select').value;
+        if (idx === '') {
+            document.getElementById('program_title').textContent = '';
+            document.getElementById('program_description').textContent = '';
+            document.getElementById('program_instructions').textContent = '';
+            document.getElementById('source_code').value = '';
+            return;
+        }
+        var p = programs[parseInt(idx, 10)];
+        document.getElementById('program_title').textContent = p.title || '';
+        document.getElementById('program_description').textContent = p.description || '';
+        document.getElementById('program_instructions').textContent = p.instructions || '';
+        document.getElementById('source_code').value = (p.code || '').trim();
+    }
+
+    function loadProgram() {
+        var code = document.getElementById('source_code').value;
+        if (!code.trim()) { alert('Введите код или выберите программу.'); return; }
+        var status = document.getElementById('load_status');
+        status.textContent = '…';
+        fetch('/load', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({code: code}),
+        }).then(function (r) {
+            if (!r.ok) return r.text().then(function (t) { throw new Error(t || r.statusText); });
+            return r.json();
+        }).then(function (data) {
+            status.textContent = 'загружено ' + data.steps + ' шаг(ов). Нажмите В/О и С/П.';
+        }).catch(function (err) {
+            status.textContent = 'ошибка: ' + err.message;
+        });
+    }
+
+    fetchPrograms();
 
 </script>
 
@@ -375,12 +424,30 @@
     </table>
 </div>
 
-<div style="position: absolute; top: 350px;">
-    <textarea style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;"
-              id="source_code" cols="60" rows="11" placeholder="Input source code here. e.g. ИП8 * ИП3 + П9 x^2 ^ ИП3 x^2"></textarea>
-    <br>
-    <button id="pull" onclick="pull()">pull</button>
-    <button id="push" onclick="push()">push</button>
+<div style="position: absolute; top: 350px; left: 20px; max-width: 760px;
+            font-family: sans-serif; color: #E0E0E0; background: #353535;
+            border: outset 3px #FFFFFF; padding: 12px;">
+    <div style="margin-bottom: 8px;">
+        <label for="program_select" style="font-weight: bold;">Программа:</label>
+        <select id="program_select" onchange="onSelectProgram()"
+                style="font-size: 14px; padding: 4px; min-width: 280px;">
+            <option value="">— загрузка списка —</option>
+        </select>
+        <button onclick="loadProgram()" style="margin-left: 8px; padding: 4px 12px;
+                font-weight: bold;">Загрузить в МК</button>
+        <span id="load_status" style="margin-left: 10px; color: #C6C73F;"></span>
+    </div>
+    <div id="program_title" style="font-weight: bold; font-size: 16px; margin: 6px 0 2px;"></div>
+    <div id="program_description" style="font-style: italic; margin-bottom: 4px;"></div>
+    <pre id="program_instructions" style="white-space: pre-wrap; background: #202020;
+         color: #D0D0D0; padding: 8px; border: 1px solid #555; margin: 4px 0;
+         max-height: 220px; overflow: auto; font-family: Consolas,Monaco,monospace;
+         font-size: 12px;"></pre>
+    <textarea id="source_code" cols="80" rows="8"
+              style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+                     background: #202020; color: #73FBDE; border: 1px solid #555;
+                     padding: 6px;"
+              placeholder="Код программы. Например: ИП8 * ИП3 + П9 x^2"></textarea>
 </div>
 
 
