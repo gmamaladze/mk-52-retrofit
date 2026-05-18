@@ -57,9 +57,53 @@ _K_PREFIX = {
     "НОП": "ВП", "КНОП": "ВП",
 }
 
+# Tokens the loader.py mnemonic table lists as synonyms for a canonical form
+# recognized above. Programs in the wild use any of these freely.
+_ALIASES = {
+    # В↑ push
+    "^": "В↑", "↑": "В↑", "В^": "В↑",
+    # ↔ swap
+    "<->": "↔", "XY": "↔", "X↔Y": "↔",
+    # * multiply (note: "х" is Cyrillic, "x" is Latin)
+    "x": "*", "х": "*", "×": "*", "⋅": "*",
+    # / divide
+    ":": "/", "÷": "/",
+    # /-/ negate
+    "+/-": "/-/",
+    # В/О reset
+    "В/0": "В/О",
+    # decimal point — chip accepts comma or period
+    ",": ".",
+    # Вx
+    "FВx": "Вx", "FBx": "Вx",
+    # F-prefix variants (where author wrote "F<name>" explicitly)
+    "Fx^2": "x^2", "Fx2": "x^2", "Fx²": "x^2",
+    "F√": "√", "FКвКор": "√", "Fквкор": "√", "Fкорень": "√",
+    "F10^x": "10^x", "F10x": "10^x",
+    "Fe^x": "e^x", "Fex": "e^x",
+    "Flg": "lg", "Fln": "ln",
+    "Fsin": "sin", "Fcos": "cos", "Ftg": "tg",
+    "Farcsin": "arcsin", "Farccos": "arccos", "Farctg": "arctg",
+    "Fπ": "π", "Fпи": "π", "пи": "π",
+    "F1/x": "1/x", "Fx^y": "x^y", "Fxy": "x^y",
+    "FL0": "L0", "FL1": "L1", "FL2": "L2", "FL3": "L3",
+    "Fx=0": "x=0", "Fx<0": "x<0",
+    "Fx>=0": "x>=0", "Fx≥0": "x>=0", "Fx⩾0": "x>=0",
+    "Fx#0": "x#0", "Fx≠0": "x#0", "Fx!=0": "x#0", "Fx<>0": "x#0",
+    # К-prefix variants
+    "K|x|": "|x|", "К|x|": "|x|",
+    "K[x]": "[x]", "К[x]": "[x]",
+    "K{x}": "{x}", "К{x}": "{x}", "K(x)": "(x)", "К(x)": "(x)",
+    "Kmax": "max", "Кmax": "max",
+    "KЗН": "ЗН", "КЗН": "ЗН",
+    "KНОП": "НОП",  "КНОП": "НОП",
+    "KСЧ": "СЧ", "КСЧ": "СЧ",
+}
+
 
 def token_to_keys(tok):
     """Translate one source token into the key sequence that enters it."""
+    tok = _ALIASES.get(tok, tok)
     if tok in _SINGLE:
         return [tok]
     if tok in _F_PREFIX:
