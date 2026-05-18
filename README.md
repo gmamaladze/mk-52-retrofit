@@ -28,28 +28,13 @@ pypy3 -m pip install pyyaml
 pypy3 webui/server.py
 ```
 
-## Raspberry Pi install
+## Raspberry Pi
 
-```
-sudo apt remove -y python3-rpi.gpio        # if preinstalled, conflicts with the pip drop-in
-cd controller && pip install -r requirements.txt
-```
+`requirements.txt` swaps `RPi.GPIO` for [`rpi-lgpio`](https://pypi.org/project/rpi-lgpio/)
+(drop-in, no source changes, works on Pi 5 and under PyPy). The full
+install steps, smoke tests, and the open questions to verify on actual
+hardware live in [doc/raspberry-pi-deployment.md](doc/raspberry-pi-deployment.md).
 
-`requirements.txt` pulls [`rpi-lgpio`](https://pypi.org/project/rpi-lgpio/),
-a drop-in replacement for `RPi.GPIO` that uses `lgpio` underneath. Same
-`import RPi.GPIO as GPIO` API so the source doesn't change. Two reasons for
-the swap:
-
-- `RPi.GPIO` is deprecated and doesn't work on Pi 5.
-- `RPi.GPIO` is a CPython C extension; `rpi-lgpio` is cffi-based, so it
-  also works under PyPy.
-
-Verify edge-detect behavior on your Pi — `keypad.add_event_detect` is the
-one spot where `rpi-lgpio` and `RPi.GPIO` [diverge slightly](https://github.com/waveform80/rpi-lgpio/blob/main/docs/differences.rst).
-
-## PyPy on the Pi (optional, for speed)
-
-PyPy has ARM builds (`apt install pypy3`); combined with the `rpi-lgpio`
-swap above it gives ~65× chip-loop speedup, bringing the emulator from
-~36 % of original МК-52 speed up to full speed with headroom. The
-[benchmark script](tools/benchmark.py) reports what your Pi can sustain.
+Performance: CPython runs the chip simulator at ~36 % of original МК-52
+speed; PyPy is ~65× faster on the same loop and reaches full speed with
+headroom. `tools/benchmark.py` measures the ceiling on a given host.
