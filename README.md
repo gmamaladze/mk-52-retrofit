@@ -28,6 +28,12 @@ pypy3 -m pip install pyyaml
 pypy3 webui/server.py
 ```
 
+## Programs
+
+10 example programs ship in `programs/`, numbered 01–10. On the Pi, press a
+program number on the keypad and hit **A↑** to load it from "ROM". See
+[doc/programs.md](doc/programs.md) for the full list and how to add more.
+
 ## Raspberry Pi
 
 `requirements.txt` swaps `RPi.GPIO` for [`rpi-lgpio`](https://pypi.org/project/rpi-lgpio/)

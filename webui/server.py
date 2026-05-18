@@ -11,7 +11,6 @@ import os
 import queue
 import sys
 import threading
-import time
 
 import yaml
 
@@ -61,98 +60,43 @@ def _broadcast(digits, points, is_dimmed):
 машина = Машина(on_display=_broadcast)
 
 
-# --------------------------------------------------------------------------
-# Keystroke-based program loader.
-#
-# Direct memory writes via Ввести_код don't survive the chip's shift-register
-# data path — the bytes get clobbered within one Шаг. Instead we drive the
-# chip through its keyboard interface: F+АВТ → В/О → F+ПРГ → opcodes → F+АВТ
-# → В/О. The chip's own microcode places opcodes at the right addresses.
-# --------------------------------------------------------------------------
+from emulator.keystroke_loader import enter_program as _load_via_keystrokes  # noqa: E402
 
-# Key (x, y) by name — mirrors controller/keypad.py.
-_KEY = {
-    "0": (2, 1), "1": (3, 1), "2": (4, 1), "3": (5, 1), "4": (6, 1),
-    "5": (7, 1), "6": (8, 1), "7": (9, 1), "8": (10, 1), "9": (11, 1),
-    "+": (2, 8), "-": (3, 8), "*": (4, 8), "/": (5, 8),
-    "↔": (6, 8), ".": (7, 8), "/-/": (8, 8), "ВП": (9, 8),
-    "Сx": (10, 8), "В↑": (11, 8),
-    "С/П": (2, 9), "БП": (3, 9), "В/О": (4, 9), "ПП": (5, 9),
-    "X→П": (6, 9), "→ШГ": (7, 9), "П→X": (8, 9), "←ШГ": (9, 9),
-    "K": (10, 9), "F": (11, 9),
-}
-
-_SINGLE = {
-    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-    "+", "-", "*", "/", "↔", ".", "/-/", "ВП", "Сx", "В↑",
-    "С/П", "БП", "В/О", "ПП",
-}
-
-_F_PREFIX = {
-    "x^2": "*", "x²": "*", "x2": "*",
-    "√": "-", "КвКор": "-", "корень": "-",
-    "1/x": "/",
-    "x^y": "↔", "xy": "↔",
-    "π": "+", "пи": "+",
-    "10^x": "0", "10x": "0",
-    "e^x": "1", "ex": "1",
-    "lg": "2", "ln": "3",
-    "sin": "7", "cos": "8", "tg": "9",
-    "arcsin": "4", "arccos": "5", "arctg": "6",
-    "x=0": "←ШГ",
-    "x#0": "С/П", "x≠0": "С/П", "x!=0": "С/П", "x<>0": "С/П",
-    "x<0": "→ШГ",
-    "x>=0": "В/О", "x≥0": "В/О", "x⩾0": "В/О",
-    "L0": "П→X", "L1": "X→П", "L2": "БП", "L3": "ПП",
-    "Вx": "В↑", "Bx": "В↑",
-}
-
-_K_PREFIX = {
-    "[x]": "7",
-    "{x}": "8", "(x)": "8",
-    "max": "9",
-    "|x|": "4",
-    "ЗН": "5",
-    "СЧ": "В↑",
-    "НОП": "ВП", "КНОП": "ВП",
-}
+# Tracks the most recent digit keys pressed via /press so A↑ knows which
+# program to load from "ROM". Reset by any non-digit key. Server is
+# single-user so a module-level buffer is fine.
+_digit_buffer = ""
 
 
-def _token_to_keys(tok):
-    if tok in _SINGLE:
-        return [tok]
-    if tok in _F_PREFIX:
-        return ["F", _F_PREFIX[tok]]
-    if tok in _K_PREFIX:
-        return ["K", _K_PREFIX[tok]]
-    if len(tok) == 3 and tok[:2] in ("ИП", "ПX", "Пx") and tok[2].isdigit():
-        return ["П→X", tok[2]]
-    if len(tok) == 2 and tok[0] == "П" and tok[1].isdigit():
-        return ["X→П", tok[1]]
-    if len(tok) == 2 and tok.isdigit():
-        return [tok[0], tok[1]]
-    raise ValueError(f"unknown program token: {tok!r}")
+def _find_program_by_number(n):
+    for path in sorted(glob.glob(os.path.join(PROGRAMS_DIR, f"{n:02d}-*.yaml"))):
+        with open(path, encoding="utf-8") as f:
+            return path, yaml.safe_load(f)
+    return None
 
 
-def _load_via_keystrokes(source, key_settle=0.18):
-    tokens = source.split()
-    cleaned = []
-    for t in tokens:
-        if len(t) >= 3 and t[2] == "." and (t[0].isdigit() or t[0] in "A-") and t[1].isdigit():
-            t = t[3:]
-        if t:
-            cleaned.append(t)
-
-    sequence = ["Сx", "F", "/-/", "В/О", "F", "ВП"]
-    for tok in cleaned:
-        sequence.extend(_token_to_keys(tok))
-    sequence.extend(["F", "/-/", "В/О"])
-
-    for k in sequence:
-        x, y = _KEY[k]
-        машина.press_button(x, y)
-        time.sleep(key_settle)
-    return len(cleaned)
+def _load_from_rom():
+    """Look up programs/NN-*.yaml using the current digit buffer and load it
+    via keystroke entry. Returns a dict the JS shows in the log."""
+    global _digit_buffer
+    digits, _digit_buffer = _digit_buffer, ""
+    if not digits:
+        return {"ok": False, "message": "A↑: type a program number first"}
+    try:
+        n = int(digits)
+    except ValueError:
+        return {"ok": False, "message": f"A↑: bad number {digits!r}"}
+    found = _find_program_by_number(n)
+    if not found:
+        return {"ok": False, "message": f"A↑: no program #{n:02d}"}
+    _, prog = found
+    title = prog.get("title", prog.get("id", ""))
+    try:
+        steps = _load_via_keystrokes(машина, prog["code"])
+    except Exception as e:
+        return {"ok": False, "message": f"A↑: load failed: {e}"}
+    return {"ok": True, "steps": steps,
+            "message": f"A↑: loaded #{n:02d} ({title}, {steps} steps) — press В/О then С/П"}
 
 
 def _dump_state():
@@ -202,6 +146,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.send_error(404)
 
     def _handle_press(self):
+        global _digit_buffer
         length = int(self.headers.get("Content-Length", "0"))
         body = self.rfile.read(length) if length else b"{}"
         try:
@@ -210,6 +155,18 @@ class Handler(http.server.BaseHTTPRequestHandler):
         except (ValueError, KeyError, json.JSONDecodeError):
             self.send_error(400, "expected JSON {x, y}")
             return
+
+        # A↑ ("load from ROM"): use the buffered digits to find a program in
+        # programs/NN-*.yaml and keystroke-enter it. Returns JSON; the JS
+        # writes the result to the load log.
+        if (x, y) == (3, 0):
+            self._serve_json(_load_from_rom())
+            return
+
+        if y == 1 and 2 <= x <= 11:
+            _digit_buffer = (_digit_buffer + str(x - 2))[-2:]
+        else:
+            _digit_buffer = ""
         машина.press_button(x, y)
         self.send_response(204)
         self.end_headers()
@@ -224,7 +181,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.send_error(400, "expected JSON {code}")
             return
         try:
-            steps = _load_via_keystrokes(code)
+            steps = _load_via_keystrokes(машина, code)
         except Exception as e:
             self.send_error(400, f"load failed: {e}")
             return
