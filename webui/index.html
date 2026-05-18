@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>George's MK 52</title>
     <style>
+        @font-face {
+            font-family: 'DSEG7Classic';
+            src: url('https://cdn.jsdelivr.net/gh/keshikan/DSEG@v0.44/fonts/DSEG7-Classic/DSEG7Classic-Italic.woff2') format('woff2'),
+                 url('https://cdn.jsdelivr.net/gh/keshikan/DSEG@v0.44/fonts/DSEG7-Classic/DSEG7Classic-Italic.woff') format('woff');
+            font-display: swap;
+        }
+
         td {
             text-align: center;
             vertical-align: bottom;
@@ -78,16 +85,27 @@
             background: #203830;
             border: solid 1px #C0C0C0;
             vertical-align: middle;
+            box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.65);
         }
 
         .МК-61 .знакоместо {
+            box-sizing: border-box;
             height: 40px;
-            width: 28px;
-            background: #203830;
+            width: 29px;
+            padding: 0;
+            margin: 0;
+            background: transparent;
             color: #73FBDE;
-            border: 0px;
-            font-size: 10px;
-            font-style: oblique;
+            border: 0;
+            outline: 0;
+            font-family: 'DSEG7Classic', 'Courier New', monospace;
+            font-size: 22px;
+            text-align: left;
+            letter-spacing: 0;
+            text-shadow:
+                0 0 3px currentColor,
+                0 0 6px currentColor,
+                0 0 14px currentColor;
         }
 
         .МК-61 .переключатель {
@@ -104,21 +122,6 @@
             color: #F8F8F8;
             font-size: 14px;
             font-weight: bold;
-        }
-
-        .МК-61 .знакоместо {
-            height: 40px;
-            width: 28px;
-            background: #203830;
-            color: #73FBDE;
-            border: 0px;
-            font-size: 25px;
-            font-style: oblique;
-        }
-
-        .МК-61 .переключатель {
-            padding: 5px 10px;
-            text-align: left;
         }
 
         .МК-61 .жёл_т {
@@ -151,15 +154,25 @@
 
 <script type="text/javascript">
 
+    // The chip's display character set includes Cyrillic letters that the
+    // original МК-52 rendered by lighting specific 7-segment patterns. DSEG7
+    // ships only Latin glyphs, so we substitute by 7-segment shape: Cyrillic
+    // Е/С share their shape with Latin E/C exactly. Cyrillic Г (top + left
+    // verticals, segments a,e,f) has no exact Latin equivalent in DSEG7 —
+    // left as-is; the browser falls back for that one glyph.
+    var DSEG_REMAP = {"Е": "E", "С": "C"};
+
     function display(digits, points, is_dimmed) {
-
-        if (!is_dimmed) var color = "#73FBDE";
-        else var color = "#43CBAE";
-        for (var i = 0; i < 12; i++) document.getElementById("Знакоместо_" + i).style.color = color;
-
+        var color = is_dimmed ? "#43CBAE" : "#73FBDE";
         for (var pos = 0; pos < 12; pos++) {
-            document.getElementById("Знакоместо_" + pos).value = digits.charAt(pos);
-            document.getElementById("Знакоместо_" + pos).value += points.charAt(pos);
+            var cell = document.getElementById("Знакоместо_" + pos);
+            cell.style.color = color;
+            var ch = digits.charAt(pos);
+            if (DSEG_REMAP[ch]) ch = DSEG_REMAP[ch];
+            // DSEG7 renders the comma as a comma-shape (decimal segment with
+            // a tail), one cell wide. The chip's `points` string already
+            // carries "," at the decimal-point position.
+            cell.value = points.charAt(pos) === "," ? ch + "," : ch;
         }
     }
 
