@@ -90,13 +90,34 @@ tight `GPIO.input()` loop). Not blocking, but it'd want a follow-up commit.
 
 ### 4. End-to-end via systemd
 
+The repo ships an autodetecting install script that writes the systemd unit
+for your specific user and path, then enables it at boot:
+
 ```bash
-sudo systemctl restart mk-52.service
-sudo systemctl status mk-52.service       # should be `active (running)`
-sudo journalctl -u mk-52.service -f       # leave running; press keys on the
-                                          # physical keypad and verify the
-                                          # LCD updates
+cd ~/mk-52-retrofit
+sudo bash tools/install-pi.sh
 ```
+
+The script:
+- runs the service as the user who invoked sudo (not root)
+- points `WorkingDirectory=` at the repo you cloned into
+- prefers `pypy3` if installed (~65× chip-loop speedup), else `/usr/bin/python3`
+- is idempotent — re-run it after `git pull` to update and restart
+
+Then verify:
+
+```bash
+sudo systemctl status mk-52        # should be `active (running)`
+sudo journalctl -u mk-52 -f        # follow logs; press keys, check LCD
+```
+
+To start without rebooting: `sudo systemctl start mk-52`.
+To check it autostarts: `sudo systemctl is-enabled mk-52` should say `enabled`.
+
+If you'd rather install by hand (no script), `mk-52.service` in the repo
+root is a working template — edit `User=`, `WorkingDirectory=`, and
+`ExecStart=`, copy to `/etc/systemd/system/`, then `systemctl daemon-reload
+&& systemctl enable --now mk-52`.
 
 ## Performance (optional)
 
