@@ -33,37 +33,32 @@ else
     echo "  (install pypy3 for ~65× speedup — see doc/raspberry-pi-deployment.md)"
 fi
 
-CONTROLLER_UNIT=/etc/systemd/system/mk-52.service
-echo "Writing $CONTROLLER_UNIT (User=$INSTALL_USER, controller mode)"
-cat > "$CONTROLLER_UNIT" <<EOF
+# Tear down the old standalone web-UI unit if it was installed by an earlier
+# version of this script — controller/app.py now runs the web UI in-process
+# so the chip state is shared with the physical keypad/LCD.
+if systemctl list-unit-files mk-52-webui.service >/dev/null 2>&1; then
+    echo "Removing obsolete mk-52-webui.service (web UI now runs in-process)"
+    systemctl disable --now mk-52-webui.service 2>/dev/null || true
+    rm -f /etc/systemd/system/mk-52-webui.service
+fi
+
+UNIT=/etc/systemd/system/mk-52.service
+echo "Writing $UNIT (User=$INSTALL_USER, controller + web UI in one process)"
+cat > "$UNIT" <<EOF
 [Unit]
-Description=МК-52 emulator controller
-After=local-fs.target
-
-[Service]
-ExecStart=$PYTHON -u app.py
-WorkingDirectory=$REPO_ROOT/controller
-Restart=always
-RestartSec=5
-StandardOutput=journal
-StandardError=journal
-User=$INSTALL_USER
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-WEBUI_UNIT=/etc/systemd/system/mk-52-webui.service
-echo "Writing $WEBUI_UNIT (User=$INSTALL_USER, web UI on :8080, bound to 0.0.0.0)"
-cat > "$WEBUI_UNIT" <<EOF
-[Unit]
-Description=МК-52 web UI (browser access)
+Description=МК-52 controller (physical keypad/LCD + web UI on :8080)
 After=local-fs.target network-online.target
 Wants=network-online.target
 
 [Service]
-ExecStart=$PYTHON -u webui/server.py 8080 0.0.0.0
-WorkingDirectory=$REPO_ROOT
+ExecStart=$PYTHON -u app.py
+WorkingDirectory=$REPO_ROOT/controller
+Environment=MK52_WEBUI_HOST=0.0.0.0
+Environment=MK52_WEBUI_PORT=8080
+# Pi-Zero CPython is the slowest supported host (~1% of original МК-52 speed).
+# 100 iters/Šaг × 2 Šaги per press ≈ 1.3 s/press end-to-end. Lower iters
+# breaks В↑ settle; higher iters lengthens press latency without gain.
+Environment=MK52_ITERS_PER_SHAG=100
 Restart=always
 RestartSec=5
 StandardOutput=journal
@@ -75,15 +70,16 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable mk-52.service mk-52-webui.service
-systemctl restart mk-52.service mk-52-webui.service
+systemctl enable mk-52.service
+systemctl restart mk-52.service
 
 echo
-echo "Installed and started both services."
+echo "Installed and started. The controller now drives the physical keypad,"
+echo "the LCD, AND a web UI on :8080 — all sharing the same emulator state."
 echo
 echo "Useful commands:"
-echo "  systemctl status mk-52 mk-52-webui          # check state"
-echo "  journalctl -u mk-52 -u mk-52-webui -f       # follow logs"
-echo "  systemctl restart mk-52 mk-52-webui         # after pulling new code"
+echo "  systemctl status mk-52        # check state"
+echo "  journalctl -u mk-52 -f        # follow logs"
+echo "  systemctl restart mk-52       # after pulling new code"
 echo
 echo "Web UI: http://<this-pi-ip>:8080/"

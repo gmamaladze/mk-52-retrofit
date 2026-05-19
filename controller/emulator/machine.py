@@ -4,6 +4,7 @@
 # Wires four chips (ИК1302, ИК1303, ИР2_1, ИР2_2) and drives them from a
 # background thread at the same 30 ms tick rate as the original setInterval.
 
+import os
 import threading
 import time
 
@@ -19,12 +20,14 @@ class Машина:
     ПЕРИОД_ШАГА = 0.030  # seconds — matches setInterval(Шаг, 30) in JS
     # Шаг iteration count. Original JS used 560 (calibrated so chip-time matches
     # real-time). CPython spends 89% of Такт runtime on int bit-ops; at 560 a
-    # Шаг takes ~76 ms wall-clock, so we run at ИТЕРАЦИЙ_В_ШАГЕ/560 of original.
-    # Under PyPy the JIT makes Шаг ~65× faster and 560 fits well inside the
-    # 30 ms tick — set this to 560 there. We default to 200 for CPython
-    # responsiveness. Run tools/benchmark.py to measure the ceiling on a
-    # given host; see README for the PyPy-on-Pi recipe.
-    ИТЕРАЦИЙ_В_ШАГЕ = 200
+    # Шаг takes ~76 ms wall-clock on a Mac, so we run at ИТЕРАЦИЙ_В_ШАГЕ/560 of
+    # original. Under PyPy the JIT makes Шаг ~65× faster — 560 fits well inside
+    # the 30 ms tick. On a Pi Zero (armv6, CPython only, no PyPy build) Šaг at
+    # 200 iters takes ~1270 ms wall-clock and blocks press_button that long; a
+    # value like 10–20 keeps the chip lock cycling fast so keystrokes feel
+    # responsive, at the same effective chip rate (limited by host CPU anyway).
+    # Override via MK52_ITERS_PER_SHAG env var. Default 200 suits a desktop.
+    ИТЕРАЦИЙ_В_ШАГЕ = int(os.environ.get("MK52_ITERS_PER_SHAG", "200"))
 
     def __init__(self, on_display=None, on_log=None):
         self.on_display = on_display
@@ -169,9 +172,17 @@ class Машина:
             self.on_display(digits, points, is_dimmed)
 
     def Нажатие_кнопки(self, x, y):
+        # Run two Šaги per press: the first with the key set (chip's keyboard
+        # scan registers it), the second with the key cleared (chip's post-
+        # press microcode settles: exit digit-entry after В↑, finalize push,
+        # etc.). On fast hosts both fit inside a single press_button so the
+        # cost is trivial; on slow hosts (Pi Zero) skipping the second Šaг
+        # leaves the chip mid-settle when the next press arrives and merges
+        # state across keys (e.g. "7 В↑ 3 +" produces 14 instead of 10).
         with self._lock:
             self.ИК1302.клав_x = x
             self.ИК1302.клав_y = y
+            self.Шаг()
             self.Шаг()
 
     # Compatibility alias matching the old Emulator.press_button.

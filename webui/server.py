@@ -59,7 +59,11 @@ def _broadcast(digits, points, is_dimmed):
             _subscribers.remove(q)
 
 
-машина = Машина(on_display=_broadcast)
+# Machine is created when this module is the entrypoint (main() below). When
+# controller/app.py drives both the physical keypad and this HTTP server,
+# it creates the machine itself and assigns it here, so display state and
+# program memory are shared between both surfaces.
+машина = None
 
 
 from emulator.keystroke_loader import enter_program as _load_via_keystrokes  # noqa: E402
@@ -240,16 +244,25 @@ class ThreadingServer(http.server.ThreadingHTTPServer):
     allow_reuse_address = True
 
 
+def serve(host="127.0.0.1", port=8080):
+    """Start the HTTP server. Assumes the module-level `машина` is set
+    (either by main() below or by an external caller like controller/app.py)."""
+    srv = ThreadingServer((host, port), Handler)
+    print(f"MK-52 web UI: http://{host}:{port}/")
+    try:
+        srv.serve_forever()
+    except KeyboardInterrupt:
+        print()
+
+
 def main():
+    """Standalone entrypoint: create the chip locally and serve."""
+    global машина
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
     host = sys.argv[2] if len(sys.argv) > 2 else "127.0.0.1"
+    машина = Машина(on_display=_broadcast)
     with машина:
-        srv = ThreadingServer((host, port), Handler)
-        print(f"MK-52 web UI: http://{host}:{port}/")
-        try:
-            srv.serve_forever()
-        except KeyboardInterrupt:
-            print()
+        serve(host, port)
 
 
 if __name__ == "__main__":
