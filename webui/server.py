@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-# Desktop-only web UI for poking the MK-52 emulator. Not used on the Pi.
+# Web UI for poking the MK-52 emulator. Can run alongside controller/app.py
+# on the Pi for browser access in addition to the physical keypad.
 #
 # Usage:
-#   python3 webui/server.py            # http://127.0.0.1:8080/
-#   python3 webui/server.py 8888       # custom port
+#   python3 webui/server.py                       # http://127.0.0.1:8080/
+#   python3 webui/server.py 8888                  # custom port
+#   python3 webui/server.py 8080 0.0.0.0          # bind to LAN (Pi mode)
 import glob
 import http.server
 import json
@@ -240,9 +242,10 @@ class ThreadingServer(http.server.ThreadingHTTPServer):
 
 def main():
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8080
+    host = sys.argv[2] if len(sys.argv) > 2 else "127.0.0.1"
     with машина:
-        srv = ThreadingServer(("127.0.0.1", port), Handler)
-        print(f"MK-52 web UI: http://127.0.0.1:{port}/")
+        srv = ThreadingServer((host, port), Handler)
+        print(f"MK-52 web UI: http://{host}:{port}/")
         try:
             srv.serve_forever()
         except KeyboardInterrupt:

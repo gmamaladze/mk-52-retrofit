@@ -33,10 +33,9 @@ else
     echo "  (install pypy3 for ~65× speedup — see doc/raspberry-pi-deployment.md)"
 fi
 
-UNIT=/etc/systemd/system/mk-52.service
-echo "Writing $UNIT (User=$INSTALL_USER, WorkingDirectory=$REPO_ROOT/controller)"
-
-cat > "$UNIT" <<EOF
+CONTROLLER_UNIT=/etc/systemd/system/mk-52.service
+echo "Writing $CONTROLLER_UNIT (User=$INSTALL_USER, controller mode)"
+cat > "$CONTROLLER_UNIT" <<EOF
 [Unit]
 Description=МК-52 emulator controller
 After=local-fs.target
@@ -54,14 +53,37 @@ User=$INSTALL_USER
 WantedBy=multi-user.target
 EOF
 
+WEBUI_UNIT=/etc/systemd/system/mk-52-webui.service
+echo "Writing $WEBUI_UNIT (User=$INSTALL_USER, web UI on :8080, bound to 0.0.0.0)"
+cat > "$WEBUI_UNIT" <<EOF
+[Unit]
+Description=МК-52 web UI (browser access)
+After=local-fs.target network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=$PYTHON -u webui/server.py 8080 0.0.0.0
+WorkingDirectory=$REPO_ROOT
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+User=$INSTALL_USER
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
 systemctl daemon-reload
-systemctl enable mk-52.service
-systemctl restart mk-52.service
+systemctl enable mk-52.service mk-52-webui.service
+systemctl restart mk-52.service mk-52-webui.service
 
 echo
-echo "Installed and started. Useful commands:"
-echo "  systemctl status mk-52        # check state"
-echo "  journalctl -u mk-52 -f        # follow logs"
-echo "  systemctl restart mk-52       # after pulling new code"
-echo "  systemctl stop mk-52          # stop now"
-echo "  systemctl disable mk-52       # don't start on boot"
+echo "Installed and started both services."
+echo
+echo "Useful commands:"
+echo "  systemctl status mk-52 mk-52-webui          # check state"
+echo "  journalctl -u mk-52 -u mk-52-webui -f       # follow logs"
+echo "  systemctl restart mk-52 mk-52-webui         # after pulling new code"
+echo
+echo "Web UI: http://<this-pi-ip>:8080/"
