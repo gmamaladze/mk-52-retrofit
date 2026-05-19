@@ -6,7 +6,6 @@ import RPi.GPIO as GPIO
 import yaml
 
 import emulator
-import display_a
 import display_b
 import keypad
 from emulator.keystroke_loader import enter_program
