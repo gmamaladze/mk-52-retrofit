@@ -280,10 +280,10 @@ func (s *Server) findProgram(n int) (*ProgramInfo, error) {
 		return nil, fmt.Errorf("no program #%02d", n)
 	}
 	sort.Strings(matches)
-	return readProgram(matches[0])
+	return ReadProgramFile(matches[0])
 }
 
-func readProgram(path string) (*ProgramInfo, error) {
+func ReadProgramFile(path string) (*ProgramInfo, error) {
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -307,7 +307,7 @@ func (s *Server) loadPrograms() ([]ProgramInfo, error) {
 	sort.Strings(matches)
 	out := make([]ProgramInfo, 0, len(matches))
 	for _, m := range matches {
-		p, err := readProgram(m)
+		p, err := ReadProgramFile(m)
 		if err != nil {
 			continue
 		}
