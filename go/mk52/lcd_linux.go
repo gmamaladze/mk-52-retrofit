@@ -22,6 +22,8 @@ const (
 	lcdEntryModeSet   = 0x04
 	lcdDisplayControl = 0x08
 	lcdFunctionSet    = 0x20
+	lcdSetCgramAddr   = 0x40
+	lcdSetDdramAddr   = 0x80
 
 	lcdEntryLeft = 0x02
 	lcdDisplayOn = 0x04
@@ -33,11 +35,29 @@ const (
 	lcdRegSelect = 0x01 // Rs bit (PCF8574 P0)
 )
 
+// SEVEN_SEG_DIGITS: 5x8 bitmasks for digits 0-9.
+var SEVEN_SEG_DIGITS = [10][8]byte{
+	{0x0E, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0E, 0x00}, // 0
+	{0x00, 0x04, 0x04, 0x04, 0x04, 0x04, 0x00, 0x00}, // 1 (centered)
+	{0x0E, 0x01, 0x01, 0x0E, 0x10, 0x10, 0x0E, 0x00}, // 2
+	{0x0E, 0x01, 0x01, 0x0E, 0x01, 0x01, 0x0E, 0x00}, // 3
+	{0x00, 0x11, 0x11, 0x0F, 0x01, 0x01, 0x00, 0x00}, // 4
+	{0x1F, 0x10, 0x10, 0x1F, 0x01, 0x01, 0x1F, 0x00}, // 5
+	{0x1F, 0x10, 0x10, 0x1F, 0x11, 0x11, 0x1F, 0x00}, // 6
+	{0x1F, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00}, // 7
+	{0x1F, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x1F, 0x00}, // 8
+	{0x1F, 0x11, 0x11, 0x1F, 0x01, 0x01, 0x1F, 0x00}, // 9
+}
+
 // LCD drives a 16×N HD44780 via a PCF8574 I²C backpack at address `addr`
 // (typically 0x27) on /dev/i2c-<bus> (typically bus 1).
 type LCD struct {
 	f  *os.File
 	mu sync.Mutex
+
+	// cgram maps digit (0-9) to CGRAM slot (0-7).
+	cgram     [8]int
+	cgramNext int
 }
 
 // NewLCD opens /dev/i2c-<bus>, claims the slave at addr, and initializes
@@ -53,6 +73,10 @@ func NewLCD(bus, addr int) (*LCD, error) {
 		return nil, fmt.Errorf("ioctl I2C_SLAVE %#x: %v", addr, errno)
 	}
 	lcd := &LCD{f: f}
+	for i := range lcd.cgram {
+		lcd.cgram[i] = -1
+	}
+
 	// HD44780 init dance from the Python driver.
 	lcd.write4(0x03)
 	lcd.write4(0x03)
@@ -95,10 +119,46 @@ func (l *LCD) write(cmd, mode byte) {
 	l.write4(mode | ((cmd << 4) & 0xF0))
 }
 
+func (l *LCD) CreateChar(slot int, mask [8]byte) {
+	l.write(lcdSetCgramAddr|byte(slot<<3), 0)
+	for i := 0; i < 8; i++ {
+		l.write(mask[i], lcdRegSelect)
+	}
+	l.write(lcdSetDdramAddr, 0)
+}
+
 // Show writes `text` to 1-based `line` (line 1 = top, line 2 = bottom on 16×2).
 func (l *LCD) Show(text string, line int) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
+
+	// 1. Identify which digits 0-9 are present in `text`.
+	present := make(map[int]bool)
+	for _, r := range text {
+		if r >= '0' && r <= '9' {
+			present[int(r-'0')] = true
+		}
+	}
+
+	// 2. Ensure all present digits are in CGRAM.
+	for d := range present {
+		found := -1
+		for slot, val := range l.cgram {
+			if val == d {
+				found = slot
+				break
+			}
+		}
+		if found == -1 {
+			// Evict and load.
+			slot := l.cgramNext
+			l.cgram[slot] = d
+			l.CreateChar(slot, SEVEN_SEG_DIGITS[d])
+			l.cgramNext = (l.cgramNext + 1) % 8
+		}
+	}
+
+	// 3. Render.
 	switch line {
 	case 1:
 		l.write(0x80, 0)
@@ -111,7 +171,15 @@ func (l *LCD) Show(text string, line int) {
 	}
 	for _, r := range text {
 		b := byte('?')
-		if r < 0x100 {
+		if r >= '0' && r <= '9' {
+			d := int(r - '0')
+			for slot, val := range l.cgram {
+				if val == d {
+					b = byte(slot)
+					break
+				}
+			}
+		} else if r < 0x100 {
 			b = byte(r)
 		}
 		l.write(b, lcdRegSelect)
