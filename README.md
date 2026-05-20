@@ -26,22 +26,26 @@ original МК-52 "load from ROM" workflow). Then **В/О**, **С/П** to run.
 
 ## Raspberry Pi
 
-```bash
-# Clone, swap GPIO library (RPi.GPIO is broken on Pi 5), install deps.
-sudo apt remove -y python3-rpi.gpio
-sudo apt install -y python3-lgpio
-cd controller && sudo pip install -r requirements.txt
+The Pi runs a single Go binary that owns the chip emulator and drives the
+physical keypad, the I²C LCD, and the web UI from one process. Source
+lives in `go/`. Deploy from a host that has Go installed (cross-compiles
+the binary, scp's it, installs the systemd service):
 
-# Auto-install systemd service so the controller starts at boot.
-cd ..
-sudo bash tools/install-pi.sh
+```bash
+bash tools/deploy-pi.sh user@<pi-ip>           # default armv6 (Pi Zero v1 / Pi 1)
+GOARM=7 bash tools/deploy-pi.sh user@<pi-ip>   # Pi 2/3
+GOARCH=arm64 bash tools/deploy-pi.sh user@<pi-ip>  # Pi 4/5
 ```
 
-The script auto-detects your user, repo path, and uses PyPy if installed.
-Idempotent — re-run after `git pull`. Verify with `systemctl status mk-52`.
+Pi prerequisites (run once): I²C enabled (`sudo raspi-config nonint do_i2c 0`),
+user in `gpio` + `i2c` groups (default on Pi OS), passwordless sudo if you
+want re-runs to be non-interactive. The repo should be at `~/mk-52-retrofit`
+(rsync or `git clone`).
 
-Smoke tests, the rpi-lgpio behavioral notes, and the per-Pi status log
-table live in [doc/raspberry-pi-deployment.md](doc/raspberry-pi-deployment.md).
+Verify with `systemctl status mk-52` and `journalctl -u mk-52 -f`. The
+Python codebase under `controller/` and `webui/` stays in the repo as
+reference but is no longer the runtime — the systemd unit points at
+`/usr/local/bin/mk52-app`.
 
 ## Programs
 
@@ -64,34 +68,37 @@ on the parsed display, so they exercise the same path real users hit.
 
 ## Performance
 
-The chip's microcode interpreter is the hot loop — a tight int-bit-op
-function that CPython evaluates at about 36 % of the original МК-52's
-speed. PyPy's JIT compiles it down to ~1 % of CPython's time, giving
-**~65× speedup**, comfortably above original chip speed.
+The chip's microcode interpreter is the hot loop. Numbers measured on the
+Pi Zero v1 (armv6, CPython's slowest target):
 
-```bash
-brew install pypy3                  # macOS
-sudo apt install pypy3              # Pi / Debian / Ubuntu
-pypy3 -m pip install pyyaml
-pypy3 webui/server.py
-```
+| Runtime | Šaг wall time | Effective chip speed |
+|---|---|---|
+| CPython         | 1270 ms | 1 % of original МК-52 |
+| Go (this binary) | 52 ms  | 20 % of original — **24× CPython** |
 
-`tools/benchmark.py` reports the max iteration rate a given runtime can
-sustain in the 30 ms tick. Run on the Pi to see the actual numbers and
-adjust `controller/emulator/machine.py:ИТЕРАЦИЙ_В_ШАГЕ` accordingly.
+On a Pi 4/5 (ARM64) Go comfortably exceeds original speed. The Mac M-series
+runs at 0.16 ms per Šaг (170× CPython).
+
+`go/cmd/bench` prints these numbers on whichever host runs it. Build with
+`tools/deploy-pi.sh` or `GOOS=linux GOARCH=arm GOARM=6 go build ./cmd/bench`.
 
 ## Layout
 
 ```
-controller/         Python port of the chip emulator and the Pi controller
-  emulator/           ИК13 / ИР2 chip simulation + program loader
-  driver/             Grove RGB LCD (I²C)
-  app.py              Pi entry point — keypad → emulator → LCD
-  keypad.py           GPIO keypad scanner
-webui/              Desktop browser UI (single-file Python http.server)
-programs/           YAML library of example programs (numbered 01–10)
-tests/              Integration tests against a running server
-tools/              install-pi.sh, benchmark.py
-doc/                Hardware schematics, deployment notes, program list
-mk-52.service       systemd unit template (install-pi.sh writes the real one)
+go/                  Go source (production runtime)
+  mk52/                chip simulator, HTTP server, GPIO/I²C drivers
+  cmd/app/             combined Pi binary (keypad + LCD + web UI)
+  cmd/server/          desktop-only web UI binary
+  cmd/bench/           Šaг throughput benchmark
+controller/          Python source (reference; was the original runtime)
+  emulator/            ИК13 / ИР2 chip simulation + program loader
+  driver/              I²C HD44780 LCD
+  app.py               original Pi entry point
+  keypad.py            GPIO keypad scanner
+webui/               browser UI assets (index.html, served by Go)
+programs/            YAML library of example programs (numbered 01–10)
+tests/               HTTP-driven integration tests (work against either backend)
+tools/               deploy-pi.sh, install-pi.sh (legacy), benchmark.py
+doc/                 Hardware schematics, deployment notes, program list
+mk-52.service        systemd unit template (Python-era; deploy-pi.sh writes the Go one)
 ```
