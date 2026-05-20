@@ -36,7 +36,7 @@ Behaviors:
 ## Loading on the desktop (web UI)
 
 Pick from the dropdown in the lower panel and click *Load to MK-52*. The
-server uses the same keystroke-entry path under the hood (`controller/emulator/keystroke_loader.py`).
+server uses the same keystroke-entry path under the hood (`go/mk52/loader.go`).
 
 ## Adding a new program
 
@@ -58,6 +58,6 @@ server uses the same keystroke-entry path under the hood (`controller/emulator/k
 3. For Pi A↑ loading, the NN prefix becomes the program number.
 
 The token vocabulary the keystroke loader understands is in
-`controller/emulator/keystroke_loader.py` (`_SINGLE`, `_F_PREFIX`,
-`_K_PREFIX`). Address-byte tokens like `02`, `14`, `54` are auto-recognized
-as two-digit BCD addresses (the chip combines them into one byte).
+`go/mk52/loader.go` (`МНЕМОНИКИ_КОМАНД`). Address-byte tokens like `02`,
+`14`, `54` are auto-recognized as two-digit BCD addresses (the chip combines
+them into one byte).

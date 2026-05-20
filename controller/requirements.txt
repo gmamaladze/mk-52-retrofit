@@ -1,5 +1,0 @@
-smbus
-# Drop-in replacement for RPi.GPIO using lgpio underneath. Works on Pi 5
-# (RPi.GPIO is broken there) and under PyPy (cffi-based, not a CPython
-# C extension). Same `import RPi.GPIO as GPIO` API, no source changes.
-rpi-lgpio

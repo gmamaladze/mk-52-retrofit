@@ -3,14 +3,10 @@
 Soviet programmable calculator (Электроника МК-52) emulator + Raspberry Pi
 hardware retrofit that runs it behind a real keypad and an I²C LCD.
 
-Originally ported from [Felix Lazarev's JS emulator](https://pmk.arbinada.com/mk61emuweb.html#)
-to Python; the production runtime is now Go (~24× faster than CPython on
-a Pi Zero, ~170× on a desktop), and Python under `controller/` and
-`webui/server.py` stays in the repo as a working reference.
-
-The same Go binary drives the physical keypad, the LCD, and a browser web
-UI from one process — they all share one chip emulator instance, so a key
-typed on the keypad updates the browser and vice versa.
+The production runtime is Go (~24× faster than CPython on a Pi Zero, ~170×
+on a desktop). The same Go binary drives the physical keypad, the LCD,
+and a browser web UI from one process — they all share one chip emulator
+instance, so a key typed on the keypad updates the browser and vice versa.
 
 ---
 
@@ -25,12 +21,6 @@ cd go && go run ./cmd/server -host 0.0.0.0      # expose on the LAN
 Pick a program from the dropdown and click *Load to MK-52*, or type a
 number on the keypad and click **A↑** to load by program number (mirrors
 the original МК-52 "load from ROM" workflow). Then **В/О**, **С/П** to run.
-
-Python still works for desktop too, if you'd rather:
-
-```bash
-python3 webui/server.py                         # http://127.0.0.1:8080/
-```
 
 ## Raspberry Pi
 
@@ -64,18 +54,9 @@ full list, the YAML schema, and how to add more.
 
 ## Tests
 
-HTTP-driven integration tests — they drive the chip through the same
-endpoints a real client uses, so they work against either the Go or Python
-backend:
-
 ```bash
 cd go && go test ./mk52                          # in-process Go tests
-go run ./cmd/server &                            # or python3 webui/server.py &
-python3 -m unittest tests.test_live tests.test_programs   # 16 cases
 ```
-
-11 live-arithmetic cases (`1 + 1`, √, ...) and 5 program-execution cases
-(counter, factorial, ...).
 
 ## Performance
 
@@ -83,8 +64,7 @@ Chip-loop benchmarks on a Pi Zero v1 (armv6, the slowest supported host):
 
 | Runtime | Šaг wall time | Effective chip speed |
 |---|---|---|
-| Python (CPython) | 1270 ms | ~1 % of original МК-52 |
-| Go               |   52 ms | ~20 % of original — **24× CPython** |
+| Go      |   52 ms | ~20 % of original — **24× CPython** |
 
 On a Pi 4/5 (ARM64) Go comfortably exceeds original chip speed. Apple
 Silicon runs at 0.16 ms per Šaг (170× CPython).
@@ -99,20 +79,12 @@ cd go && go run ./cmd/bench
 ## Layout
 
 ```
-go/                  Go source — production runtime
+go/                  Go source
   mk52/                chip simulator, HTTP server, GPIO/I²C drivers
   cmd/app/             combined Pi binary (keypad + LCD + web UI)
   cmd/server/          desktop-only web UI binary
   cmd/bench/           Šaг throughput benchmark
-controller/          Python source — reference (was the original runtime)
-  emulator/            ИК13 / ИР2 chip simulation + program loader
-  driver/              I²C HD44780 LCD
-  app.py               original Pi entry point
-  keypad.py            GPIO keypad scanner
-webui/               browser UI assets (index.html, served by both Go and Python)
+webui/               browser UI assets (index.html, served by Go)
 programs/            YAML program library (numbered 01–10)
-tests/               HTTP-driven integration tests (work against either backend)
-tools/               deploy-pi.sh, benchmark.py, install-pi.sh (legacy Python)
-doc/                 hardware schematics, deployment notes, program list
-mk-52.service        legacy systemd unit (Python-era; deploy-pi.sh writes the Go one)
+doc/                 hardware schematics, program list
 ```
