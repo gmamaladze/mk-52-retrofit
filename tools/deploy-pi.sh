@@ -4,10 +4,9 @@
 #
 # Run from the repo root, on the host that has Go installed:
 #
-#   bash tools/deploy-pi.sh                       # default user@192.168.2.177
-#   bash tools/deploy-pi.sh pi@192.168.1.50       # custom target
-#   GOARM=7 bash tools/deploy-pi.sh user@host     # Pi 2/3 (armv7)
-#   GOARCH=arm64 bash tools/deploy-pi.sh user@host  # Pi 4/5 (aarch64)
+#   bash tools/deploy-pi.sh user@<pi-ip>            # default armv6
+#   GOARM=7 bash tools/deploy-pi.sh user@<pi-ip>    # Pi 2/3 (armv7)
+#   GOARCH=arm64 bash tools/deploy-pi.sh user@<pi-ip>  # Pi 4/5 (aarch64)
 #
 # Defaults to ARMv6 (Pi Zero v1 / Pi 1). Sets up:
 #   - /usr/local/bin/mk52-app           (the Go binary)
@@ -16,7 +15,12 @@
 
 set -e
 
-TARGET="${1:-george@192.168.2.177}"
+if [ -z "$1" ]; then
+    echo "usage: $0 user@pi-ip [more...]"
+    echo "  e.g. $0 george@192.168.2.178"
+    exit 1
+fi
+TARGET="$1"
 GOOS="${GOOS:-linux}"
 GOARCH="${GOARCH:-arm}"
 GOARM="${GOARM:-6}"
