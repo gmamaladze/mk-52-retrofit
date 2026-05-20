@@ -13,9 +13,7 @@ instance, so a key typed on the keypad updates the browser and vice versa.
 ## Desktop
 
 ```bash
-cd go && go run ./cmd/server                    # http://127.0.0.1:8080/
-cd go && go run ./cmd/server -port 8888         # custom port
-cd go && go run ./cmd/server -host 0.0.0.0      # expose on the LAN
+make run-server                 # http://127.0.0.1:8080/
 ```
 
 Pick a program from the dropdown and click *Load to MK-52*, or type a
@@ -25,13 +23,12 @@ the original МК-52 "load from ROM" workflow). Then **В/О**, **С/П** to run
 ## Raspberry Pi
 
 The Pi runs a single Go binary as a systemd service. Deploy from any host
-that has Go installed — the script cross-compiles, scp's the binary, and
-sets up the unit:
+that has Go installed using the provided `Makefile`:
 
 ```bash
-bash tools/deploy-pi.sh user@<pi-ip>              # default armv6 (Pi Zero v1 / Pi 1)
-GOARM=7 bash tools/deploy-pi.sh user@<pi-ip>      # Pi 2/3
-GOARCH=arm64 bash tools/deploy-pi.sh user@<pi-ip> # Pi 4/5
+make deploy PI_TARGET=user@<pi-ip>              # default armv6 (Pi Zero v1 / Pi 1)
+GOARM=7 make deploy PI_TARGET=user@<pi-ip>      # Pi 2/3
+GOARCH=arm64 make deploy PI_TARGET=user@<pi-ip> # Pi 4/5
 ```
 
 Pi prerequisites (one-time): I²C enabled (`sudo raspi-config nonint do_i2c 0`),
@@ -55,7 +52,7 @@ full list, the YAML schema, and how to add more.
 ## Tests
 
 ```bash
-cd go && go test ./mk52                          # in-process Go tests
+make test
 ```
 
 ## Performance
@@ -69,12 +66,7 @@ Chip-loop benchmarks on a Pi Zero v1 (armv6, the slowest supported host):
 On a Pi 4/5 (ARM64) Go comfortably exceeds original chip speed. Apple
 Silicon runs at 0.16 ms per Šaг (170× CPython).
 
-`go/cmd/bench` prints these numbers on whichever host runs it:
-
-```bash
-cd go && go run ./cmd/bench
-# or, for the Pi: GOOS=linux GOARCH=arm GOARM=6 go build -o /tmp/mk52-bench ./cmd/bench
-```
+`make bench` prints these numbers on whichever host runs it.
 
 ## Layout
 

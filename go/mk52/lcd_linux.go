@@ -35,28 +35,14 @@ const (
 	lcdRegSelect = 0x01 // Rs bit (PCF8574 P0)
 )
 
-// SEVEN_SEG_DIGITS: 5x8 bitmasks for digits 0-9.
-var SEVEN_SEG_DIGITS = [10][8]byte{
-	{0x0E, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0E, 0x00}, // 0
-	{0x00, 0x04, 0x04, 0x04, 0x04, 0x04, 0x00, 0x00}, // 1 (centered)
-	{0x0E, 0x01, 0x01, 0x0E, 0x10, 0x10, 0x0E, 0x00}, // 2
-	{0x0E, 0x01, 0x01, 0x0E, 0x01, 0x01, 0x0E, 0x00}, // 3
-	{0x00, 0x11, 0x11, 0x0F, 0x01, 0x01, 0x00, 0x00}, // 4
-	{0x1F, 0x10, 0x10, 0x1F, 0x01, 0x01, 0x1F, 0x00}, // 5
-	{0x1F, 0x10, 0x10, 0x1F, 0x11, 0x11, 0x1F, 0x00}, // 6
-	{0x1F, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00}, // 7
-	{0x1F, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x1F, 0x00}, // 8
-	{0x1F, 0x11, 0x11, 0x1F, 0x01, 0x01, 0x1F, 0x00}, // 9
-}
-
 // LCD drives a 16×N HD44780 via a PCF8574 I²C backpack at address `addr`
 // (typically 0x27) on /dev/i2c-<bus> (typically bus 1).
 type LCD struct {
 	f  *os.File
 	mu sync.Mutex
 
-	// cgram maps digit (0-9) to CGRAM slot (0-7).
-	cgram     [8]int
+	// cgram maps rune (e.g. '0', 'r') to CGRAM slot (0-7).
+	cgram     [8]rune
 	cgramNext int
 }
 
@@ -132,19 +118,19 @@ func (l *LCD) Show(text string, line int) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
-	// 1. Identify which digits 0-9 are present in `text`.
-	present := make(map[int]bool)
+	// 1. Identify which characters in `text` need custom glyphs.
+	present := make(map[rune]bool)
 	for _, r := range text {
-		if r >= '0' && r <= '9' {
-			present[int(r-'0')] = true
+		if _, ok := Font7Seg[r]; ok {
+			present[r] = true
 		}
 	}
 
-	// 2. Ensure all present digits are in CGRAM.
-	for d := range present {
+	// 2. Ensure all needed custom glyphs are in CGRAM.
+	for r := range present {
 		found := -1
 		for slot, val := range l.cgram {
-			if val == d {
+			if val == r {
 				found = slot
 				break
 			}
@@ -152,8 +138,8 @@ func (l *LCD) Show(text string, line int) {
 		if found == -1 {
 			// Evict and load.
 			slot := l.cgramNext
-			l.cgram[slot] = d
-			l.CreateChar(slot, SEVEN_SEG_DIGITS[d])
+			l.cgram[slot] = r
+			l.CreateChar(slot, Font7Seg[r])
 			l.cgramNext = (l.cgramNext + 1) % 8
 		}
 	}
@@ -171,13 +157,16 @@ func (l *LCD) Show(text string, line int) {
 	}
 	for _, r := range text {
 		b := byte('?')
-		if r >= '0' && r <= '9' {
-			d := int(r - '0')
+		if _, ok := Font7Seg[r]; ok {
 			for slot, val := range l.cgram {
-				if val == d {
+				if val == r {
 					b = byte(slot)
 					break
 				}
+			}
+			// Fallback to standard ROM character if not in CGRAM (avoids '?' when >8 distinct custom chars)
+			if b == '?' && r < 0x100 {
+				b = byte(r)
 			}
 		} else if r < 0x100 {
 			b = byte(r)
@@ -197,7 +186,7 @@ func (l *LCD) Clear() {
 // FormatDisplay formats the chip's (digits, points) into the 16-char string
 // the LCD shows. Mirrors display_b.show: digit followed by ',' if the
 // decimal-point indicator is set at that position; pad to 16 chars; HD44780
-// has no Cyrillic, so Г → 'r' (matching display_b.py).
+// has no Cyrillic, so Г (\u0413) → 'r', Е (\u0415) → 'E', С (\u0421) → 'C'.
 func FormatDisplay(digits, points string) string {
 	dRunes := []rune(digits)
 	pRunes := []rune(points)
@@ -208,7 +197,10 @@ func FormatDisplay(digits, points string) string {
 			b.WriteRune(pRunes[i])
 		}
 	}
-	s := strings.ReplaceAll(b.String(), "Г", "r")
+	s := b.String()
+	s = strings.ReplaceAll(s, "\u0413", "r")
+	s = strings.ReplaceAll(s, "\u0415", "E")
+	s = strings.ReplaceAll(s, "\u0421", "C")
 	for len([]rune(s)) < 16 {
 		s += " "
 	}

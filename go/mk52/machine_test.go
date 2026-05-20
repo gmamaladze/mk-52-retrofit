@@ -116,3 +116,39 @@ func BenchmarkШаг_RealTime(b *testing.B) {
 		_ = time.Since(t0)
 	}
 }
+
+func TestFormatDisplay(t *testing.T) {
+	tests := []struct {
+		digits string
+		points string
+		want   string
+	}{
+		{"0123456789-L", "            ", "0123456789-L    "},
+		{"СГЕ", "   ", "CrE             "},
+	}
+
+	for _, tt := range tests {
+		got := FormatDisplay(tt.digits, tt.points)
+		wantRunes := []rune(tt.want)
+		gotRunes := []rune(got)
+		if len(gotRunes) < len(wantRunes) {
+			t.Errorf("FormatDisplay(%q, %q) = %q, length too short", tt.digits, tt.points, got)
+			continue
+		}
+		for i := 0; i < len(wantRunes); i++ {
+			if gotRunes[i] != wantRunes[i] {
+				t.Errorf("FormatDisplay(%q, %q) = %q, want starting with %q", tt.digits, tt.points, got, tt.want)
+				break
+			}
+		}
+	}
+}
+
+func TestFontCoverage(t *testing.T) {
+	chars := "0123456789-LrEC+"
+	for _, r := range chars {
+		if _, ok := Font7Seg[r]; !ok {
+			t.Errorf("Character %q (0x%x) missing from Font7Seg", r, r)
+		}
+	}
+}
