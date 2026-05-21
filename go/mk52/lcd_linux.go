@@ -63,15 +63,21 @@ func NewLCD(bus, addr int) (*LCD, error) {
 		lcd.cgram[i] = -1
 	}
 
-	// HD44780 init dance from the Python driver.
-	lcd.write4(0x03)
+	// Wait for LCD to power up.
+	time.Sleep(100 * time.Millisecond)
+
+	// HD44780 init dance: MUST be sent in the HIGH nibble (DB4-DB7).
+	// 0x30 = 8-bit mode.
+	lcd.write4(0x30)
 	time.Sleep(5 * time.Millisecond)
-	lcd.write4(0x03)
+	lcd.write4(0x30)
 	time.Sleep(5 * time.Millisecond)
-	lcd.write4(0x03)
+	lcd.write4(0x30)
 	time.Sleep(5 * time.Millisecond)
-	lcd.write4(0x02)
+	// 0x20 = switch to 4-bit mode.
+	lcd.write4(0x20)
 	time.Sleep(5 * time.Millisecond)
+
 	lcd.write(lcdFunctionSet|lcd2Line|lcd5x8Dots|lcd4BitMode, 0)
 	lcd.write(lcdDisplayControl|lcdDisplayOn, 0)
 	lcd.write(lcdClearDisplay, 0)
