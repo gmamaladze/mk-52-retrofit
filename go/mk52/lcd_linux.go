@@ -65,9 +65,13 @@ func NewLCD(bus, addr int) (*LCD, error) {
 
 	// HD44780 init dance from the Python driver.
 	lcd.write4(0x03)
+	time.Sleep(5 * time.Millisecond)
 	lcd.write4(0x03)
+	time.Sleep(5 * time.Millisecond)
 	lcd.write4(0x03)
+	time.Sleep(5 * time.Millisecond)
 	lcd.write4(0x02)
+	time.Sleep(5 * time.Millisecond)
 	lcd.write(lcdFunctionSet|lcd2Line|lcd5x8Dots|lcd4BitMode, 0)
 	lcd.write(lcdDisplayControl|lcdDisplayOn, 0)
 	lcd.write(lcdClearDisplay, 0)
